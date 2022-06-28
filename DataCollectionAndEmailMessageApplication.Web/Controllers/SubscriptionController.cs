@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Configuration;
+using DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Request;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
@@ -18,7 +20,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         [Route("AvailableSubscriptions")]
         public async Task<IActionResult> GetAvailableSubscriptionsAsync()
         {
-            var userName = User.FindFirst(GeneralConfiguration.CustomClaim).Value;
+            var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
 
             var result = await _subscriptionService.GetAvailableSubscriptionsAsync(userName);
 
@@ -32,7 +34,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         [Route("MySubscriptions")]
         public async Task<IActionResult> GetMySubscriptionsAsync()
         {
-            var userName = User.FindFirst(GeneralConfiguration.CustomClaim).Value;
+            var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
 
             var result = await _subscriptionService.GetMySubscriptionsAsync(userName);
 
@@ -48,13 +50,13 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userName = User.FindFirst(GeneralConfiguration.CustomClaim).Value;
+                var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
                 var result = _subscriptionService.SubscribeAsync(userName, model);
 
                 return Ok(result);
             }
 
-            return BadRequest(GeneralConfiguration.InvalidModel);
+            return BadRequest(ApplicationConfiguration.InvalidModel);
         }
 
         [HttpPut]
@@ -64,7 +66,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
             
             if (ModelState.IsValid)
             {
-                var userName = User.FindFirst(GeneralConfiguration.CustomClaim).Value;
+                var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
                 var result = await _subscriptionService.UpdateSubscriptionAsync(userName, model);
 
                 if (result == false)
@@ -73,7 +75,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
                 return Ok(result);
             }
 
-            return BadRequest(GeneralConfiguration.InvalidModel);
+            return BadRequest(ApplicationConfiguration.InvalidModel);
         }
 
         [HttpDelete]
@@ -82,7 +84,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userName = User.FindFirst(GeneralConfiguration.CustomClaim).Value;
+                var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
                 var result = await _subscriptionService.DeleteSubscriptionAsync(userName, model);
 
                 if (result == false)
@@ -91,7 +93,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
                 return Ok(result);
             }
 
-            return BadRequest(GeneralConfiguration.InvalidModel);
+            return BadRequest(ApplicationConfiguration.InvalidModel);
         }
     }
 }
