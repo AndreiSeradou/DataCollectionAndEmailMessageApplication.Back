@@ -12,10 +12,10 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 {
     public class WheatherSubscriptionRepository : IWheatherSubscriptionRepository
     {
-        public ICollection<WheatherSubscription> GetAll()
+        public ICollection<WheatherSubscription> GetAll(string userName)
         {
             List<WheatherSubscription> subList = new List<WheatherSubscription>();
-            string sqlExpression = "SELECT * FROM Subscription";
+            string sqlExpression = "SELECT * FROM Subscription WHERE UserId = userName";
             using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
             {
                 connection.Open();
@@ -36,7 +36,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             return subList;
         }
 
-        public WheatherSubscription GetById(int id)
+        public WheatherSubscription GetById(string userName, int id)
         {
             WheatherSubscription wheatherSubscription = default;
 

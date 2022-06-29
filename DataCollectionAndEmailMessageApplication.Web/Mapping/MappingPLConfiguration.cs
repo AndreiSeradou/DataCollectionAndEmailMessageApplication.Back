@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
+using DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Request;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Mapping
 {
@@ -6,11 +8,8 @@ namespace DataCollectionAndEmailMessageApplication.Web.Mapping
     {
         public MappingPLConfiguration()
         {
-            CreateMap<OrderBLModel, OrderResponse>().ReverseMap();
-            CreateMap<BookBLModel, BookResponse>().ReverseMap();
-            CreateMap<BookBLModel, BookRequest>().ReverseMap();
-            CreateMap<Book, BookResponse>().ReverseMap();
-            CreateMap<UserResponse, User>().ReverseMap();
+            CreateMap<WheatherSubscriptionBLModel, WheatherSubscribeRequest>().ReverseMap();
+            CreateMap<WheatherSubscriptionBLModel, UpdateWheatherSubscriptionRequest>().ReverseMap();
         }
     }
 }
