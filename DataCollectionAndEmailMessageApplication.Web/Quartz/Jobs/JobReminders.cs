@@ -1,4 +1,5 @@
-﻿using Quartz;
+﻿using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
+using Quartz;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Quartz.Jobs
 {
@@ -13,7 +14,9 @@ namespace DataCollectionAndEmailMessageApplication.Web.Quartz.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
+            Console.WriteLine("111111");
             await _emailSenderService.SendEmail();
+            Console.WriteLine("hello");
         }
     }
 }

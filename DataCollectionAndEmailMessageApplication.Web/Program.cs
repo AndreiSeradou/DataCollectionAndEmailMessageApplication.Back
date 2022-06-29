@@ -1,7 +1,11 @@
+using DataCollectionAndEmailMessageApplication.BL.Configuration;
+using DataCollectionAndEmailMessageApplication.Web.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.RegisterService();
+builder.Services.RegisterPLMappingConfig();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
