@@ -12,7 +12,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 {
     public class WheatherSubscriptionRepository : IWheatherSubscriptionRepository
     {
-        public ICollection<WheatherSubscription> GetAll(string userName)
+        public ICollection<WheatherSubscription> GetAll(int userId)
         {
             List<WheatherSubscription> subList = new List<WheatherSubscription>();
             string sqlExpression = "SELECT * FROM Subscription WHERE UserId = userName";
@@ -36,7 +36,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             return subList;
         }
 
-        public WheatherSubscription GetById(string userName, int id)
+        public WheatherSubscription GetById(int userId, int id)
         {
             WheatherSubscription wheatherSubscription = default;
 

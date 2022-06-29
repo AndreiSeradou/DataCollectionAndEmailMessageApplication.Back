@@ -18,33 +18,54 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
             _mapper = mapper;
         }
 
-        public ICollection<WheatherSubscriptionBLModel> GetAllWheatherSubscriptions(string userName)
+        public ICollection<WheatherSubscriptionBLModel> GetAllWheatherSubscriptions(int userId)
         {
-            var subscriptions = _wheatherSubscriptionRepository.GetAll(userName);
+            var subscriptions = _wheatherSubscriptionRepository.GetAll(userId);
             var result = _mapper.Map<ICollection<WheatherSubscriptionBLModel>>(subscriptions);
 
             return result;
         }
 
-        public bool Subscribe(string userName, WheatherSubscriptionBLModel model)
+        public bool Subscribe(int userId, WheatherSubscriptionBLModel model)
         {
-            var dalModel = _mapper.Map<WheatherSubscription>(model);
-            _wheatherSubscriptionRepository.Create(dalModel);
+            try
+            {
+                var dalModel = _mapper.Map<WheatherSubscription>(model);
+                _wheatherSubscriptionRepository.Create(dalModel);
+            }
+            catch
+            {
+                return false;
+            }
 
             return true;
         }
 
-        public bool Unsubscribe(string userName, int id)
+        public bool Unsubscribe(int userId, int id)
         {
-            _wheatherSubscriptionRepository.Delete(id);
+            try
+            {
+                _wheatherSubscriptionRepository.Delete(id);
+            }
+            catch
+            {
+                return false;
+            }
 
             return true;
         }
 
-        public bool UpdateSubscription(string userName, WheatherSubscriptionBLModel model)
+        public bool UpdateSubscription(int userId, WheatherSubscriptionBLModel model)
         {
-            var dalModel = _mapper.Map<WheatherSubscription>(model);
-            _wheatherSubscriptionRepository.Update(dalModel);
+            try
+            {
+                var dalModel = _mapper.Map<WheatherSubscription>(model);
+                _wheatherSubscriptionRepository.Update(dalModel);
+            }
+            catch
+            {
+                return false;
+            }
 
             return true;
         }

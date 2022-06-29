@@ -24,9 +24,9 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         [Route("AllWheatherSubscriptions")]
         public IActionResult GetAllWheatherSubscriptions()
         {
-            var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
+            var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
 
-            var result = _wheatherSubscriptionService.GetAllWheatherSubscriptions(userName);
+            var result = _wheatherSubscriptionService.GetAllWheatherSubscriptions(userId);
 
             if (result == null)
                 return NotFound();
@@ -41,10 +41,10 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
+                var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
                 var plModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
 
-                var result = _wheatherSubscriptionService.Subscribe(userName, plModel);
+                var result = _wheatherSubscriptionService.Subscribe(userId, plModel);
 
                 return Ok(result);
             }
@@ -59,10 +59,10 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
             
             if (ModelState.IsValid)
             {
-                var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
+                var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
                 var plModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
 
-                var result = _wheatherSubscriptionService.UpdateSubscription(userName, plModel);
+                var result = _wheatherSubscriptionService.UpdateSubscription(userId, plModel);
 
                 if (result == false)
                     return NotFound();
@@ -79,8 +79,8 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
-                var result = _wheatherSubscriptionService.Unsubscribe(userName, id);
+                var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
+                var result = _wheatherSubscriptionService.Unsubscribe(userId, id);
 
                 if (result == false)
                     return NotFound();
