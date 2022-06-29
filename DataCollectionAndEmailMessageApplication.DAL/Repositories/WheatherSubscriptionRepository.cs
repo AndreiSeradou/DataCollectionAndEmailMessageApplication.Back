@@ -10,11 +10,11 @@ using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
 
 namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 {
-    public class SubscriptionRepository : ISubscriptionRepository
+    public class WheatherSubscriptionRepository : IWheatherSubscriptionRepository
     {
-        public ICollection<Subscription> GetAll()
+        public ICollection<WheatherSubscription> GetAll()
         {
-            List<Subscription> subList = new List<Subscription>();
+            List<WheatherSubscription> subList = new List<WheatherSubscription>();
             string sqlExpression = "SELECT * FROM Subscription";
             using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
             {
@@ -27,7 +27,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
                     {
                         while (reader.Read()) 
                         {
-                            subList.Add(new Subscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserId = reader.GetInt32(4), ApiId = reader.GetInt32(5) });
+                            subList.Add(new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserId = reader.GetInt32(4), Param1 = reader.GetString(5), Param2 = reader.GetString(6) });
                         }
                     }
                 }
@@ -36,7 +36,36 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             return subList;
         }
 
-        public void Create()
+        public WheatherSubscription GetById(int id)
+        {
+            WheatherSubscription wheatherSubscription = default;
+
+            using (var connection = new SqliteConnection("Data Source=hello.db"))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText =
+                @"
+        SELECT name
+        FROM user
+        WHERE id = $id
+    ";
+                command.Parameters.AddWithValue("$id", id);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        wheatherSubscription = new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserId = reader.GetInt32(4), Param1 = reader.GetString(5), Param2 = reader.GetString(6) };
+                    }
+                }
+            }
+
+            return wheatherSubscription;
+        }
+
+        public void Create(WheatherSubscription model)
         {
 
             using (var connection = new SqliteConnection("Data Source=usersdata.db"))
@@ -50,7 +79,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             }
         }
 
-        public void Update()
+        public void Update(WheatherSubscription model)
         {
             string sqlExpression = "UPDATE Users SET Age=20 WHERE Name='Tom'";
             using (var connection = new SqliteConnection("Data Source=usersdata.db"))
@@ -60,12 +89,10 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
 
                 int number = command.ExecuteNonQuery();
-
-                Console.WriteLine($"Обновлено объектов: {number}");
             }
         }
 
-        public void Delete()
+        public void Delete(int id)
         {
             string sqlExpression = "DELETE  FROM Users WHERE Name='Tom'";
             using (var connection = new SqliteConnection("Data Source=usersdata.db"))

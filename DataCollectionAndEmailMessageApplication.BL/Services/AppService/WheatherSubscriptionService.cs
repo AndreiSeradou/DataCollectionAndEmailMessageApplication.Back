@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
 {
-    public class SubscriptionService
+    public class WheatherSubscriptionService
     {
     }
 }

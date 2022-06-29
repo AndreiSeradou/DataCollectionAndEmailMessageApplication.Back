@@ -1,6 +1,6 @@
 ﻿namespace DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Responce
 {
-    public class UpdateSubscriptionResponce
+    public class WheatherSubscribeResponce
     {
     }
 }

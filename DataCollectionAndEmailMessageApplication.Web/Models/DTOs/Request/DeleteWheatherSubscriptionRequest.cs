@@ -1,6 +1,6 @@
 ﻿namespace DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Request
 {
-    public class UpdateSubscriptionRequest
+    public class DeleteWheatherSubscriptionRequest
     {
     }
 }

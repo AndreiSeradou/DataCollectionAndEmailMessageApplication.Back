@@ -1,28 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Configuration;
 using DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Request;
+using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class SubscriptionController : ControllerBase
+    public class WheatherSubscriptionController : ControllerBase
     {
-        private readonly ISubscriptionService _subscriptionService;
-        public SubscriptionController(ISubscriptionService subscriptionService)
+        private readonly IWheatherSubscriptionService _wheatherSubscriptionService;
+        public WheatherSubscriptionController(IWheatherSubscriptionService wheatherSubscriptionService)
         {
-            _subscriptionService = subscriptionService;
+            _wheatherSubscriptionService = wheatherSubscriptionService;
         }
 
         [HttpGet]
-        [Route("AvailableSubscriptions")]
-        public async Task<IActionResult> GetAvailableSubscriptionsAsync()
+        [Route("AllWheatherSubscriptions")]
+        public async Task<IActionResult> GetAllWheatherSubscriptions()
         {
             var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
 
-            var result = await _subscriptionService.GetAvailableSubscriptionsAsync(userName);
+            var result = await _wheatherSubscriptionService.GetAllWheatherSubscriptions(userName);
 
             if (result == null)
                 return NotFound();
@@ -30,28 +29,15 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("MySubscriptions")]
-        public async Task<IActionResult> GetMySubscriptionsAsync()
-        {
-            var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
-
-            var result = await _subscriptionService.GetMySubscriptionsAsync(userName);
-
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
-        }
 
         [HttpPost]
         [Route("Subscribe")]
-        public async Task<IActionResult> SubscribeAsync([FromBody] SubscribeRequest model)
+        public async Task<IActionResult> SubscribeAsync([FromBody] WheatherSubscribeRequest model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
-                var result = _subscriptionService.SubscribeAsync(userName, model);
+                var result = _wheatherSubscriptionService.Subscribe(userName, model);
 
                 return Ok(result);
             }
@@ -60,14 +46,14 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         }
 
         [HttpPut]
-        [Route("UpdateSubscription")]
-        public async Task<IActionResult> UpdateSubscriptionAsync([FromBody] UpdateSubscriptionRequest model)
+        [Route("UpdateWheatherSubscription")]
+        public async Task<IActionResult> UpdateWheatherSubscriptionAsync([FromBody] UpdateWheatherSubscriptionRequest model)
         {
             
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
-                var result = await _subscriptionService.UpdateSubscriptionAsync(userName, model);
+                var result = await _wheatherSubscriptionService.UpdateSubscriptionAsync(userName, model);
 
                 if (result == false)
                     return NotFound();
@@ -79,13 +65,13 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteSubscription")]
-        public async Task<IActionResult> DeleteSubscriptionAsync([FromBody] DeleteSubscriptionRequest model)
+        [Route("DeleteWheatherSubscription")]
+        public async Task<IActionResult> DeleteSubscriptionAsync([FromBody] DeleteWheatherSubscriptionRequest model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value;
-                var result = await _subscriptionService.DeleteSubscriptionAsync(userName, model);
+                var result = await _wheatherSubscriptionService.DeleteWheatherSubscriptionAsync(userName, model);
 
                 if (result == false)
                     return NotFound();

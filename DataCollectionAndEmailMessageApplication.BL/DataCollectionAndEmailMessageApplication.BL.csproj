@@ -13,9 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Configuration\" />
-    <Folder Include="Interfaces\Services\" />
     <Folder Include="Mapping\" />
-    <Folder Include="Services\DomainService\" />
   </ItemGroup>
 
 </Project>
