@@ -3,7 +3,7 @@ using Quartz.Spi;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Quartz.JobsFactory
 {
-    public class SingletonJobFactory : IJobFactory
+    public class SingletonJobFactory 
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -12,14 +12,8 @@ namespace DataCollectionAndEmailMessageApplication.Web.Quartz.JobsFactory
             _serviceProvider = serviceProvider;
         }
 
-        public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
-        {
-            return _serviceProvider.GetRequiredService(bundle.JobDetail.JobType) as IJob;
-        }
+       
 
-        public void ReturnJob(IJob job)
-        {
-
-        }
+        
     }
 }

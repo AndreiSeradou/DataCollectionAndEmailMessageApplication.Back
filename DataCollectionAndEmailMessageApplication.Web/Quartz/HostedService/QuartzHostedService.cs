@@ -7,21 +7,19 @@ namespace DataCollectionAndEmailMessageApplication.Web.Quartz.HostedService
     public class QuartzHostedService : IHostedService
     {
         private readonly ISchedulerFactory _schedulerFactory;
-        private readonly IJobFactory _jobFactory;
         private readonly IEnumerable<MyJob> _myJobs;
         public IScheduler Scheduler { get; set; }
 
-        public QuartzHostedService(ISchedulerFactory schedulerFactory, IJobFactory jobFactory, IEnumerable<MyJob> myJobs)
+        public QuartzHostedService(ISchedulerFactory schedulerFactory, IEnumerable<MyJob> myJobs)
         {
             _schedulerFactory = schedulerFactory;
-            _jobFactory = jobFactory;
             _myJobs = myJobs;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             Scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
-            Scheduler.JobFactory = _jobFactory;
+           
 
             foreach (var myJob in _myJobs)
             {

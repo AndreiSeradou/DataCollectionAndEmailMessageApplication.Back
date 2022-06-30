@@ -4,6 +4,9 @@ using DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Request;
 using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using AutoMapper;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
+using DataCollectionAndEmailMessageApplication.Web.Quartz.Jobs;
+using Quartz;
+using Quartz.Spi;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
@@ -13,17 +16,39 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
     {
         private readonly IWheatherSubscriptionService _wheatherSubscriptionService;
         private readonly IMapper _mapper;
+        private readonly ISchedulerFactory _schedulerFactory;
+        private readonly IJobFactory _jobFactory;
+        private IScheduler _scheduler { get; set; }
 
-        public WheatherSubscriptionController(IWheatherSubscriptionService wheatherSubscriptionService, IMapper mapper)
+
+        public WheatherSubscriptionController(IWheatherSubscriptionService wheatherSubscriptionService, IMapper mapper, ISchedulerFactory schedulerFactory, IJobFactory jobFactory)
         {
             _wheatherSubscriptionService = wheatherSubscriptionService;
             _mapper = mapper;
+            _schedulerFactory = schedulerFactory;
+            _jobFactory = jobFactory;
         }
 
         [HttpGet]
         [Route("AllWheatherSubscriptions")]
-        public IActionResult GetAllWheatherSubscriptions()
+        public async Task<IActionResult> GetAllWheatherSubscriptionsAsync()
         {
+            var my =
+            new MyJob(type: typeof(JobReminders), expression: ApplicationConfiguration.Expression);
+            _scheduler = await _schedulerFactory.GetScheduler();
+            // 2, открыть планировщик
+            _scheduler.JobFactory = _jobFactory;
+      
+            // 3, создаем триггер
+            var trigger =  TriggerBuilder.Create().WithIdentity($"{my.Type.FullName}.trigger").WithCronSchedule(my.Expression).WithDescription(my.Expression).Build();
+        
+        // 4. Создать задачу
+        var jobDetail =  JobBuilder.Create(my.Type).WithIdentity(my.Type.FullName).WithDescription(my.Type.Name).Build();
+        
+        // 5, Привязать триггеры и задачи к планировщику
+        await _scheduler.ScheduleJob(jobDetail, trigger);
+            _scheduler.Start();
+
             var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
 
             var result = _wheatherSubscriptionService.GetAllWheatherSubscriptions(userId);

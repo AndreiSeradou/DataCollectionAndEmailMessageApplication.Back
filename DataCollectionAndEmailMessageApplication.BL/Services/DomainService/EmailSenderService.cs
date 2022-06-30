@@ -33,9 +33,6 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.DomainService
                         mail.IsBodyHtml = true;
 
                         await client.SendMailAsync(mail);
-
-            Console.WriteLine("wd10000");
-            
         }
     }
 }

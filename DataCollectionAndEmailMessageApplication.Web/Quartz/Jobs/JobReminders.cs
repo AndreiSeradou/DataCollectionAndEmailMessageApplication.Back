@@ -12,11 +12,14 @@ namespace DataCollectionAndEmailMessageApplication.Web.Quartz.Jobs
             _emailSenderService = emailSenderService;
         }
 
-        public async Task Execute(IJobExecutionContext context)
+        public  Task Execute(IJobExecutionContext context)
         {
-            Console.WriteLine("111111");
-            await _emailSenderService.SendEmail();
-            Console.WriteLine("hello");
+
+            //await _emailSenderService.SendEmail();
+            return Task.Run(() =>
+            {
+                Console.WriteLine("1111");
+            });
         }
     }
 }
