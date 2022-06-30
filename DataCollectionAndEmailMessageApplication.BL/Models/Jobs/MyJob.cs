@@ -1,4 +1,4 @@
-﻿namespace DataCollectionAndEmailMessageApplication.Web.Quartz.Jobs
+﻿namespace DataCollectionAndEmailMessageApplication.BL.Models.DTOs
 {
     public class MyJob
     {

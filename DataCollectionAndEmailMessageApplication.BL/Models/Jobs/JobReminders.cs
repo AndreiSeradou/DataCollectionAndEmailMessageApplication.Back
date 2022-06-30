@@ -1,7 +1,7 @@
 ﻿using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using Quartz;
 
-namespace DataCollectionAndEmailMessageApplication.Web.Quartz.Jobs
+namespace DataCollectionAndEmailMessageApplication.BL.Models.Jobs
 {
     public class JobReminders : IJob
     {

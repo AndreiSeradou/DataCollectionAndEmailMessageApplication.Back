@@ -1,22 +1,20 @@
-﻿using Configuration;
-using DataCollectionAndEmailMessageApplication.Web.Mapping;
-using DataCollectionAndEmailMessageApplication.Web.Quartz.HostedService;
-using DataCollectionAndEmailMessageApplication.Web.Quartz.Jobs;
-using DataCollectionAndEmailMessageApplication.Web.Quartz.JobsFactory;
+﻿using DataCollectionAndEmailMessageApplication.Web.Mapping;
 using Quartz;
 using Quartz.Impl;
-using Quartz.Spi;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Configuration
 {
     public static class DependenciesConfiguration
     {
+        public static IServiceCollection RegisterPLConfig(this IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+
+            return serviceCollection;
+        }
+
         public static IServiceCollection RegisterPLMappingConfig(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddHostedService<QuartzHostedService>();
-            serviceCollection.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
-            serviceCollection.AddSingleton<JobReminders>();
-            //serviceCollection.AddSingleton(new MyJob(type: typeof(JobReminders), expression: ApplicationConfiguration.Expression));
             serviceCollection.AddAutoMapper(
                 c => c.AddProfile<MappingPLConfiguration>(),
                 typeof(MappingPLConfiguration));
