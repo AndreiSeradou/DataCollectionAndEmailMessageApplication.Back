@@ -29,24 +29,8 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 
         [HttpGet]
         [Route("AllWheatherSubscriptions")]
-        public async Task<IActionResult> GetAllWheatherSubscriptionsAsync()
+        public async Task<IActionResult> GetAllWheatherSubscriptionsAsync([FromQuery] string i, [FromQuery] string ii)
         {
-            var my =
-            new MyJob(type: typeof(JobReminders), expression: ApplicationConfiguration.Expression);
-
-            // 2, открыть планировщик
-        
-      
-            // 3, создаем триггер
-            var trigger =  TriggerBuilder.Create().WithIdentity($"{my.Type.FullName}.trigger").WithCronSchedule(my.Expression).WithDescription(my.Expression).Build();
-        
-        // 4. Создать задачу
-        var jobDetail =  JobBuilder.Create(my.Type).WithIdentity(my.Type.FullName).WithDescription(my.Type.Name).Build();
-                
-        // 5, Привязать триггеры и задачи к планировщику
-        await _scheduler.ScheduleJob(jobDetail, trigger);
-            _scheduler.Start();
-
             var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
 
             var result = _wheatherSubscriptionService.GetAllWheatherSubscriptions(userId);
@@ -67,7 +51,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
                 var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
                 var plModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
 
-                var result = _wheatherSubscriptionService.Subscribe(userId, plModel);
+                var result = _wheatherSubscriptionService.SubscribeAsync(userId, plModel);
 
                 return Ok(result);
             }
@@ -85,10 +69,10 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
                 var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
                 var plModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
 
-                var result = _wheatherSubscriptionService.UpdateSubscription(userId, plModel);
+                var result = _wheatherSubscriptionService.UpdateSubscriptionAsync(userId, plModel);
 
-                if (result == false)
-                    return NotFound();
+                //if (result == false)
+                //    return NotFound();
 
                 return Ok(result);
             }
@@ -98,12 +82,13 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 
         [HttpDelete]
         [Route("Unsubscribe")]
-        public IActionResult Unsubscribe([FromBody] int id)
+        public IActionResult Unsubscribe([FromBody] WheatherSubscribeRequest model)
         {
             if (ModelState.IsValid)
             {
                 var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
-                var result = _wheatherSubscriptionService.Unsubscribe(userId, id);
+                var plModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
+                var result = _wheatherSubscriptionService.Unsubscribe(plModel);
 
                 if (result == false)
                     return NotFound();

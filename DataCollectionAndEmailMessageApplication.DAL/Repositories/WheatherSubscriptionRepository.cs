@@ -27,7 +27,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
                     {
                         while (reader.Read()) 
                         {
-                            subList.Add(new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserId = reader.GetInt32(4), Param1 = reader.GetString(5), Param2 = reader.GetString(6) });
+                            subList.Add(new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserId = reader.GetInt32(4),  City = reader.GetString(5),  Date = reader.GetString(6) });
                         }
                     }
                 }
@@ -57,7 +57,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        wheatherSubscription = new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserId = reader.GetInt32(4), Param1 = reader.GetString(5), Param2 = reader.GetString(6) };
+                        wheatherSubscription = new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserId = reader.GetInt32(4), City = reader.GetString(5), Date = reader.GetString(6) };
                     }
                 }
             }

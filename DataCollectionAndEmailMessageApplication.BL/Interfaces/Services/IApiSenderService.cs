@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Interfaces.Services
 {
-    internal class IApiSenderService
+    public interface IApiSenderService
     {
+        string SendOnWheatherApi(string city, string date);
+        string SendOnGoogleTranslateApi();
+        string SendOnFootballApi();
     }
 }
+        

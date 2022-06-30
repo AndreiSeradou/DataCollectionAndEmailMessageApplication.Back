@@ -9,8 +9,8 @@ namespace DataCollectionAndEmailMessageApplication.BL.Interfaces.Services
 {
     public interface IQuartzJobService
     {
-        Task CreateJobAsync(MyJob myJob);
-        void UpdateJob(MyJob myJob);
-        void DeleteJob(MyJob myJob);
+        Task CreateJobAsync(WheatherSubscriptionBLModel model);
+        Task UpdateJobAsync(WheatherSubscriptionBLModel model);
+        void DeleteJob(WheatherSubscriptionBLModel model);
     }
 }
