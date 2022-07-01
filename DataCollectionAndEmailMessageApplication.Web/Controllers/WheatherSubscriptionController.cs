@@ -5,8 +5,6 @@ using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using AutoMapper;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using Quartz;
-using Quartz.Spi;
-using DataCollectionAndEmailMessageApplication.BL.Models.Jobs;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
@@ -31,7 +29,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         [Route("AllWheatherSubscriptions")]
         public async Task<IActionResult> GetAllWheatherSubscriptionsAsync([FromQuery] string i, [FromQuery] string ii)
         {
-            var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
+            var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaimId)!.Value);
 
             var result = _wheatherSubscriptionService.GetAllWheatherSubscriptions(userId);
 
@@ -48,7 +46,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
+                var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaimId)!.Value);
                 var plModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
 
                 var result = _wheatherSubscriptionService.SubscribeAsync(userId, plModel);
@@ -61,18 +59,18 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 
         [HttpPut]
         [Route("UpdateWheatherSubscription")]
-        public IActionResult UpdateWheatherSubscription([FromBody] UpdateWheatherSubscriptionRequest model)
+        public async Task<IActionResult> UpdateWheatherSubscription([FromBody] UpdateWheatherSubscriptionRequest model)
         {
             
             if (ModelState.IsValid)
             {
-                var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
+                var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaimId)!.Value);
                 var plModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
 
-                var result = _wheatherSubscriptionService.UpdateSubscriptionAsync(userId, plModel);
+                var result = await _wheatherSubscriptionService.UpdateSubscriptionAsync(userId, plModel);
 
-                //if (result == false)
-                //    return NotFound();
+                if (result == false)
+                    return NotFound();
 
                 return Ok(result);
             }
@@ -86,7 +84,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaim)!.Value);
+                var userId = Convert.ToInt32(User.FindFirst(ApplicationConfiguration.CustomClaimId)!.Value);
                 var plModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
                 var result = _wheatherSubscriptionService.Unsubscribe(plModel);
 

@@ -13,5 +13,6 @@ namespace DataCollectionAndEmailMessageApplication.BL.Interfaces.Services
         bool CreateUser(UserBLModel model);
         bool UpdateUser(UserBLModel model);
         bool DeleteUser(UserBLModel model);
+        bool CheakUserByNameAndEmail(string userName, string userEmail);
     }
 }

@@ -1,19 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+using AutoMapper;
+using System.IdentityModel.Tokens.Jwt;
+using Configuration;
+using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
+using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
+using DataCollectionAndEmailMessageApplication.Web.Configuration;
+using DataCollectionAndEmailMessageApplication.Web.Models.DTOs;
+using DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Request;
+using DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Responce;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using OnlineLibrary.DataAccessLayer.Entities;
-using OnlineLibrary.PresentationLayer.Configuration;
-using OnlineLibrary.PresentationLayer.Models.DTOs.Requests;
-using OnlineLibrary.Configuration.GeneralConfiguration;
-using OnlineLibrary.PresentationLayer.Models.DTOs.Responses;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
@@ -21,18 +19,15 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
     [ApiController]
     public class AuthManagementController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
         private readonly JwtConfig _jwtConfig;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public AuthManagementController(
-            UserManager<User> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IOptionsMonitor<JwtConfig> optionsMonitor)
+        public AuthManagementController(IOptionsMonitor<JwtConfig> optionsMonitor, IUserService userService, IMapper mapper)
         {
-            _roleManager = roleManager;
-            _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
+            _userService = userService;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -41,47 +36,43 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _roleManager.CreateAsync(new IdentityRole(GeneralConfiguration.LibrarianRole));
-                await _roleManager.CreateAsync(new IdentityRole(GeneralConfiguration.UserRole));
-               
-                var existingUserByName = await _userManager.FindByNameAsync(user.Username);
-                var existingUserByEmail = await _userManager.FindByEmailAsync(user.Email);
+                var existingUserByEmail = _userService.GetAllUsers().Where(u => u.Email == user.Email || u.Name == user.Name);
 
-
-                if (existingUserByName != null || existingUserByEmail != null)
+                if (existingUserByEmail != null)
                 {
-                    return BadRequest(new AuthResult(){
+                    return BadRequest(new AuthResponce(){
                             Errors = new List<string>() {
-                                GeneralConfiguration.ErrorName,
-                                GeneralConfiguration.ErrorEmail
+                                ApplicationConfiguration.ErrorName,
+                                ApplicationConfiguration.ErrorEmail
                             },
                             Success = false
                     });
                 }
 
-                var newUser = new User() { Email = user.Email, UserName = user.Username};
-                var isCreated = await _userManager.CreateAsync(newUser, user.Password);
-                if(isCreated.Succeeded)
+                var newUser = new UserPLModel() { Email = user.Email, Name  = user.Name, Password = user.Password, Role = "User"};
+                var userPLModel = _mapper.Map<UserBLModel>(newUser);
+                var isCreated = _userService.CreateUser(userPLModel);
+
+                if(isCreated)
                 {
-                    await _userManager.AddToRoleAsync(newUser, GeneralConfiguration.UserRole);
-                    var role = await _userManager.GetRolesAsync(newUser);
-
                     var jwtToken = await GenerateJwtToken( newUser);
-
+                    
                     return Ok(jwtToken);
-                } else {
-                    return BadRequest(new AuthResult(){
-                            Errors = isCreated.Errors.Select(x => x.Description).ToList(),
+                } 
+                else 
+                {
+                    return BadRequest(new AuthResponce()
+                    {
+                            Errors = new List<string> { ApplicationConfiguration.InvalidModel },
                             Success = false,
                     });
                 }
             }
 
-            return BadRequest(new AuthResult(){
-                    Errors = new List<string>() {
-                        GeneralConfiguration.ErrorPayload
-                    },
-                    Success = false
+            return BadRequest(new AuthResponce()
+            {
+                Errors = new List<string> { ApplicationConfiguration.ErrorPayload },
+                Success = false,
             });
         }
 
@@ -91,42 +82,30 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-                var existingUser = await _userManager.FindByEmailAsync(user.Email);
+                var existingUser = _userService.GetAllUsers().FirstOrDefault(u => u.Email == user.Email );
 
                 if(existingUser == null) {
-                        return BadRequest(new AuthResult(){
-                            Errors = new List<string>() {
-                                GeneralConfiguration.ErrorLogin
-                            },
-                            Success = false
+                    return BadRequest(new AuthResponce()
+                    {
+                        Errors = new List<string> { ApplicationConfiguration.ErrorLogin },
+                        Success = false,
                     });
                 }
 
-                var isCorrect = await _userManager.CheckPasswordAsync(existingUser, user.Password);
-
-                if(!isCorrect) {
-                      return BadRequest(new AuthResult(){
-                            Errors = new List<string>() {
-                                GeneralConfiguration.ErrorLogin
-                            },
-                            Success = false
-                    });
-                }
-
-                var jwtToken  = await GenerateJwtToken(existingUser);
+                var userPLModel = _mapper.Map<UserPLModel>(existingUser);
+                var jwtToken  = await GenerateJwtToken(userPLModel);
 
                 return Ok(jwtToken);
             }
 
-            return BadRequest(new AuthResult(){
-                    Errors = new List<string>() {
-                        GeneralConfiguration.ErrorPayload
-                    },
-                    Success = false
+            return BadRequest(new AuthResponce()
+            {
+                Errors = new List<string> { ApplicationConfiguration.ErrorPayload },
+                Success = false,
             });
         }
 
-        private async Task<AuthResult> GenerateJwtToken(User user)
+        private async Task<AuthResponce> GenerateJwtToken(UserPLModel user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
@@ -143,51 +122,30 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = jwtTokenHandler.WriteToken(token);
-            var role = await _userManager.GetRolesAsync(user);
 
-
-
-            return new AuthResult() {
+            return new AuthResponce() {
                 Token = jwtToken,
                 Success = true,
-                Name = user.UserName,
-                Role = role.FirstOrDefault()
+                Name = user.Name,
+                Role = user.Role,
             };
         }
 
 
-        private async Task<List<Claim>> GetAllValidClaims(User user)
+        private static Task<List<Claim>> GetAllValidClaims(UserPLModel user)
         {
             var claims = new List<Claim>
             {
-                new Claim(GeneralConfiguration.CustomClaim, user.Id),
+                new Claim(ApplicationConfiguration.CustomClaimId, user.Id.ToString()),
+                new Claim(ApplicationConfiguration.CustomClaimName, user.Name),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            claims.AddRange(userClaims);
+            claims.Add(new Claim(ClaimTypes.Role, user.Role));
 
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            foreach(var userRole in userRoles)
-            {
-                var role = await _roleManager.FindByNameAsync(userRole);
-
-                if(role != null)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, userRole));
-
-                    var roleClaims = await _roleManager.GetClaimsAsync(role);
-                    foreach(var roleClaim in roleClaims)
-                    {
-                        claims.Add(roleClaim);
-                    }
-                }
-            }
-
-            return claims;
+            return Task.FromResult(claims);
         }
     }
 }

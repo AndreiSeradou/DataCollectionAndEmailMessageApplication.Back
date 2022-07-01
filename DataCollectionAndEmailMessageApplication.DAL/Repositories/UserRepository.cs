@@ -63,7 +63,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             return userList;
         }
 
-        public User GetById(int userId)
+        public User GetByEmail(string userEmail)
         {
             User user = default;
 
@@ -78,7 +78,36 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
         FROM user
         WHERE id = $id
     ";
-                command.Parameters.AddWithValue("$id", userId);
+                command.Parameters.AddWithValue("$name", userEmail);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2) };
+                    }
+                }
+            }
+
+            return user;
+        }
+
+        public User GetByName(string userName)
+        {
+            User user = default;
+
+            using (var connection = new SqliteConnection("Data Source=hello.db"))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText =
+                @"
+        SELECT name
+        FROM user
+        WHERE id = $id
+    ";
+                command.Parameters.AddWithValue("$name", userName);
 
                 using (var reader = command.ExecuteReader())
                 {

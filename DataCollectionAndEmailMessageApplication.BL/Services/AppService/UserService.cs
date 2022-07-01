@@ -22,6 +22,12 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
             _mapper = mapper;
         }
 
+        public bool CheakUserByNameAndEmail(string userName, string userEmail)
+        {
+            var userByName = _userRepository.GetByName(userName);
+            throw new NotImplementedException();
+        }
+
         public bool CreateUser(UserBLModel model)
         {
             try

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataCollectionAndEmailMessageApplication.DAL.Models.DTOs
+﻿namespace DataCollectionAndEmailMessageApplication.Web.Models.DTOs
 {
-    public class User
+    public class UserPLModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
