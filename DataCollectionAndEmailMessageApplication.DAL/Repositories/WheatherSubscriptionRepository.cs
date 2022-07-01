@@ -67,7 +67,6 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 
         public void Create(WheatherSubscription model)
         {
-
             using (var connection = new SqliteConnection("Data Source=usersdata.db"))
             {
                 connection.Open();

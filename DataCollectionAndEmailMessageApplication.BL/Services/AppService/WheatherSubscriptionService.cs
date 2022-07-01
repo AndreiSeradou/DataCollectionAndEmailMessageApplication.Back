@@ -22,7 +22,7 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
 
         public ICollection<WheatherSubscriptionBLModel> GetAllWheatherSubscriptions(int userId)
         {
-            var subscriptions = _wheatherSubscriptionRepository.GetAll(userId);
+            var subscriptions = _wheatherSubscriptionRepository.GetAll(userId).Where(s => s.UserId == userId);
             var result = _mapper.Map<ICollection<WheatherSubscriptionBLModel>>(subscriptions);
 
             return result;
