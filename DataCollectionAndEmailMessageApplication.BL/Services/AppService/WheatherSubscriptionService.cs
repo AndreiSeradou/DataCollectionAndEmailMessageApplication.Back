@@ -9,11 +9,11 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
     public class WheatherSubscriptionService : ISubscriptionService<WheatherSubscriptionBLModel>
     {
         private readonly ISubscriptionRepository<WheatherSubscription> _wheatherSubscriptionRepository;
-        private readonly IQuartzJobService _quartzJobService;
+        private readonly IQuartzJobService<WheatherSubscriptionBLModel> _quartzJobService;
         private readonly IMapper _mapper;
 
 
-        public WheatherSubscriptionService(ISubscriptionRepository<WheatherSubscription> wheatherSubscriptionRepository, IMapper mapper, IQuartzJobService quartzJobService)
+        public WheatherSubscriptionService(ISubscriptionRepository<WheatherSubscription> wheatherSubscriptionRepository, IMapper mapper, IQuartzJobService<WheatherSubscriptionBLModel> quartzJobService)
         {
             _wheatherSubscriptionRepository = wheatherSubscriptionRepository;
             _mapper = mapper;
@@ -28,13 +28,13 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
             return result;
         }
 
-        public async Task<bool> SubscribeAsync(string userName, WheatherSubscriptionBLModel model)
+        public async Task<bool> SubscribeAsync(string userName, string email, WheatherSubscriptionBLModel model)
         {
             var dalModel = _mapper.Map<WheatherSubscription>(model);
             var result = _wheatherSubscriptionRepository.Create(userName, dalModel);
 
             if (result)
-                await _quartzJobService.CreateJobAsync(model);
+                await _quartzJobService.CreateJobAsync(email, model);
 
             return result;
         }
@@ -49,13 +49,13 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
             return result;
         }
 
-        public async Task<bool> UpdateSubscriptionAsync(string userName, WheatherSubscriptionBLModel model)
+        public async Task<bool> UpdateSubscriptionAsync(string userName, string email, WheatherSubscriptionBLModel model)
         {
             var dalModel = _mapper.Map<WheatherSubscription>(model);
             var result = _wheatherSubscriptionRepository.Update(userName, dalModel);
 
             if (result)
-                await _quartzJobService.UpdateJobAsync(model);
+                await _quartzJobService.UpdateJobAsync(email, model);
 
             return result;
         }

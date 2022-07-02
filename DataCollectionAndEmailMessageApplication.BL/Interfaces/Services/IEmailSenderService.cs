@@ -8,6 +8,6 @@ namespace DataCollectionAndEmailMessageApplication.BL.Interfaces.Services
 {
     public interface IEmailSenderService
     {
-        public Task SendEmail(string content);
+        public Task Send(string email, string content);
     }
 }

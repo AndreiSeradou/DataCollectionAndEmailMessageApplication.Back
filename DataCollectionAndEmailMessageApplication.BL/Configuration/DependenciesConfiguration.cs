@@ -13,10 +13,14 @@ namespace DataCollectionAndEmailMessageApplication.BL.Configuration
     {
         public static IServiceCollection RegisterService(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddScoped<IEmailSenderService, EmailSenderService>();
-            serviceCollection.AddScoped<IApiSenderService, ApiSenderService>();
-            serviceCollection.AddScoped<IQuartzJobService, QuartzJobService>();
             serviceCollection.AddScoped<IUserService, UserService>();
+            serviceCollection.AddScoped<IEmailSenderService, EmailSenderService>();
+            serviceCollection.AddScoped<IApiSenderService<WheatherSubscriptionBLModel, string>, WheatherApiSenderService>();
+            serviceCollection.AddScoped<IApiSenderService<GoogleTranslateSubscriptionBLModel, string>, GoogleTranslateApiSenderService>();
+            serviceCollection.AddScoped<IApiSenderService<FootballSubscriptionBLModel, string>, FootballApiSenderService>();
+            serviceCollection.AddScoped<IQuartzJobService<WheatherSubscriptionBLModel>, QuartzWheatherJobService>();
+            serviceCollection.AddScoped<IQuartzJobService<FootballSubscriptionBLModel>, QuartzFootballJobService>();
+            serviceCollection.AddScoped<IQuartzJobService<GoogleTranslateSubscriptionBLModel>, QuartzGoogleTranslateJobService>();
             serviceCollection.AddScoped<ISubscriptionService<WheatherSubscriptionBLModel>, WheatherSubscriptionService>();
             serviceCollection.AddScoped<ISubscriptionService<FootballSubscriptionBLModel>, FootballSubscriptionService>();
             serviceCollection.AddScoped<ISubscriptionService<GoogleTranslateSubscriptionBLModel>, GoogleTranslateSubscriptionService>();

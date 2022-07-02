@@ -3,11 +3,6 @@ using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
 using DataCollectionAndEmailMessageApplication.DAL.Models.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
 {
@@ -37,32 +32,17 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
 
         public bool CreateUser(UserBLModel model)
         {
-            try
-            {
-                var dalModel = _mapper.Map<User>(model);
+            var dalModel = _mapper.Map<User>(model);
+            var result = _userRepository.Create(dalModel);
 
-                _userRepository.Create(dalModel);
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
+            return result;
         }
 
         public bool DeleteUser(UserBLModel model)
         {
-            try
-            {
-                _userRepository.Delete(model.Id);
-            }
-            catch
-            {
-                return false;
-            }
+            var result = _userRepository.Delete(model.Id);
 
-            return true;
+            return result;
         }
 
         public ICollection<UserBLModel> GetAllUsers()
@@ -75,18 +55,10 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
 
         public bool UpdateUser(UserBLModel model)
         {
-            try
-            {
-                var dalModel = _mapper.Map<User>(model);
+            var dalModel = _mapper.Map<User>(model);
+            var result = _userRepository.Update(dalModel);
 
-                _userRepository.Update(dalModel);
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
+            return result;
         }
     }
 }

@@ -14,10 +14,10 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
     public class GoogleTranslateSubscriptionService : ISubscriptionService<GoogleTranslateSubscriptionBLModel>
     {
         private readonly ISubscriptionRepository<GoogleTranslateSubscription> _googleTranslateSubscriptionRepository;
-        private readonly IQuartzJobService _quartzJobService;
+        private readonly IQuartzJobService<GoogleTranslateSubscriptionBLModel> _quartzJobService;
         private readonly IMapper _mapper;
 
-        public GoogleTranslateSubscriptionService(ISubscriptionRepository<GoogleTranslateSubscription> googleTranslateSubscriptionRepository, IQuartzJobService quartzJobService, IMapper mapper)
+        public GoogleTranslateSubscriptionService(ISubscriptionRepository<GoogleTranslateSubscription> googleTranslateSubscriptionRepository, IQuartzJobService<GoogleTranslateSubscriptionBLModel> quartzJobService, IMapper mapper)
         {
             _googleTranslateSubscriptionRepository = googleTranslateSubscriptionRepository;
             _quartzJobService = quartzJobService;
@@ -32,13 +32,13 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
             return result;
         }
 
-        public async Task<bool> SubscribeAsync(string userName, GoogleTranslateSubscriptionBLModel model)
+        public async Task<bool> SubscribeAsync(string userName, string email, GoogleTranslateSubscriptionBLModel model)
         {
             var dalModel = _mapper.Map<GoogleTranslateSubscription>(model);
             var result = _googleTranslateSubscriptionRepository.Create(userName, dalModel);
 
             if (result)
-                await _quartzJobService.CreateJobAsync(model);
+                await _quartzJobService.CreateJobAsync(email, model);
 
             return result;
         }
@@ -53,13 +53,13 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
             return result;
         }
 
-        public async Task<bool> UpdateSubscriptionAsync(string userName, GoogleTranslateSubscriptionBLModel model)
+        public async Task<bool> UpdateSubscriptionAsync(string userName, string email, GoogleTranslateSubscriptionBLModel model)
         {
             var dalModel = _mapper.Map<GoogleTranslateSubscription>(model);
             var result = _googleTranslateSubscriptionRepository.Update(userName, dalModel);
 
             if (result)
-                await _quartzJobService.UpdateJobAsync(model);
+                await _quartzJobService.UpdateJobAsync(email, model);
 
             return result;
         }

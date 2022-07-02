@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Interfaces.Services
 {
-    public interface IApiSenderService
+    public interface IApiSenderService<T, K> where T : class where K : class
     {
-        string SendOnWheatherApi(string city, string date);
-        string SendOnGoogleTranslateApi();
-        string SendOnFootballApi();
+        string SendOnApi(List<K> values = default);
     }
 }
         

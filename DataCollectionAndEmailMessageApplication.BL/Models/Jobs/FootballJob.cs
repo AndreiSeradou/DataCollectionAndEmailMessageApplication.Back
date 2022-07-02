@@ -1,4 +1,5 @@
 ﻿using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
+using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using Quartz;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ namespace DataCollectionAndEmailMessageApplication.BL.Models.Jobs
     public class FootballJob : IJob
     {
         private readonly IEmailSenderService _emailSenderService;
-        private readonly IApiSenderService _apiSenderService;
+        private readonly IApiSenderService<FootballSubscriptionBLModel, string> _apiSenderService;
 
-        public FootballJob(IEmailSenderService emailSenderService, IApiSenderService apiSenderService)
+        public FootballJob(IEmailSenderService emailSenderService, IApiSenderService<FootballSubscriptionBLModel, string> apiSenderService)
         {
             _emailSenderService = emailSenderService;
             _apiSenderService = apiSenderService;
@@ -21,9 +22,13 @@ namespace DataCollectionAndEmailMessageApplication.BL.Models.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var apiResult = _apiSenderService.SendOnFootballApi();
+            var jobData = context.JobDetail.JobDataMap;
 
-            await _emailSenderService.SendEmail(apiResult);
+            var email = jobData.GetString("Email");
+
+            var apiResult = _apiSenderService.SendOnApi();
+
+            await _emailSenderService.Send(email, apiResult);
         }
     }
 }

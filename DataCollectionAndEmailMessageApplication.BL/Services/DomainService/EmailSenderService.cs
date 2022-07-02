@@ -12,7 +12,7 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.DomainService
 {
     public class EmailSenderService : IEmailSenderService
     {
-        public async Task SendEmail(string content)
+        public async Task Send(string email, string content)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.DomainService
                 client.Credentials = new System.Net.NetworkCredential("andrey03072000@gmail.com", "7798929aQ");
                 client.EnableSsl = true;
 
-                var mail = new MailMessage("andrey03072000@gmail.com", "maksastapmakslook@gmail.com");
+                var mail = new MailMessage("andrey03072000@gmail.com", email);
 
                 using (MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
                 {
@@ -31,8 +31,8 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.DomainService
                     mail.Attachments.Add(attachment);
                 }
 
-                mail.Subject = "test";
-                mail.Body = string.Format("hello my bad");
+                mail.Subject = "Information alert";
+                mail.Body = string.Format("infarmation about your subscription");
                 mail.IsBodyHtml = true;
 
                 await client.SendMailAsync(mail);

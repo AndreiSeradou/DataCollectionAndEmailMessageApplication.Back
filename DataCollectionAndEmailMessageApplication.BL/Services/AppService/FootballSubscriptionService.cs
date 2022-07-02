@@ -3,21 +3,16 @@ using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
 using DataCollectionAndEmailMessageApplication.DAL.Models.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
 {
     public class FootballSubscriptionService : ISubscriptionService<FootballSubscriptionBLModel>
     {
         private readonly ISubscriptionRepository<FootballSubscription> _footballSubscriptionRepository;
-        private readonly IQuartzJobService _quartzJobService;
+        private readonly IQuartzJobService<FootballSubscriptionBLModel> _quartzJobService;
         private readonly IMapper _mapper;
 
-        public FootballSubscriptionService(ISubscriptionRepository<FootballSubscription> footballSubscriptionRepository, IQuartzJobService quartzJobService, IMapper mapper)
+        public FootballSubscriptionService(ISubscriptionRepository<FootballSubscription> footballSubscriptionRepository, IQuartzJobService<FootballSubscriptionBLModel> quartzJobService, IMapper mapper)
         {
             _footballSubscriptionRepository = footballSubscriptionRepository;
             _quartzJobService = quartzJobService;
@@ -32,13 +27,13 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
             return result;
         }
 
-        public async Task<bool> SubscribeAsync(string userName, FootballSubscriptionBLModel model)
+        public async Task<bool> SubscribeAsync(string userName, string email, FootballSubscriptionBLModel model)
         {
             var dalModel = _mapper.Map<FootballSubscription>(model);
             var result = _footballSubscriptionRepository.Create(userName, dalModel);
 
             if (result)
-                await _quartzJobService.CreateJobAsync(model);
+                await _quartzJobService.CreateJobAsync(email, model);
 
             return result;
         }
@@ -53,13 +48,13 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
             return result;
         }
 
-        public async Task<bool> UpdateSubscriptionAsync(string userName, FootballSubscriptionBLModel model)
+        public async Task<bool> UpdateSubscriptionAsync(string userName, string email, FootballSubscriptionBLModel model)
         {
             var dalModel = _mapper.Map<FootballSubscription>(model);
             var result = _footballSubscriptionRepository.Update(userName, dalModel);
 
             if (result)
-                await _quartzJobService.UpdateJobAsync(model);
+                await _quartzJobService.UpdateJobAsync(email, model);
 
             return result;
         }

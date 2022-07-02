@@ -4,6 +4,7 @@ using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using DataCollectionAndEmailMessageApplication.Web.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
@@ -42,12 +43,13 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         public IActionResult Subscribe([FromBody] FootballSubscriptionPLModel model)
         {
             if (ModelState.IsValid)
-            {
+            {                
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
+                var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
                 var blModel = _mapper.Map<FootballSubscriptionBLModel>(model);
 
-                var result = _footballSubscriptionService.SubscribeAsync(userName, blModel);
+                var result = _footballSubscriptionService.SubscribeAsync(userName, userEmail, blModel);
 
                 return Ok(result);
             }
@@ -62,10 +64,11 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
+                var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
                 var blModel = _mapper.Map<FootballSubscriptionBLModel>(model);
 
-                var result = await _footballSubscriptionService.UpdateSubscriptionAsync(userName, blModel);
+                var result = await _footballSubscriptionService.UpdateSubscriptionAsync(userName, userEmail, blModel);
 
                 if (result == false)
                     return NotFound();
