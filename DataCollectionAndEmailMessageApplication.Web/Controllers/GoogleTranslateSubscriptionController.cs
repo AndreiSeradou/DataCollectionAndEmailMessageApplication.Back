@@ -11,10 +11,10 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
     [Route("[controller]")]
     public class GoogleTranslateSubscriptionController : ControllerBase
     {
-        private readonly IGoogleTranslateSubscriptionService _googleTranslateSubscriptionService;
+        private readonly ISubscriptionService<GoogleTranslateSubscriptionBLModel> _googleTranslateSubscriptionService;
         private readonly IMapper _mapper;
 
-        public GoogleTranslateSubscriptionController(IGoogleTranslateSubscriptionService googleTranslateSubscriptionService, IMapper mapper)
+        public GoogleTranslateSubscriptionController(ISubscriptionService<GoogleTranslateSubscriptionBLModel> googleTranslateSubscriptionService, IMapper mapper)
         {
             _googleTranslateSubscriptionService = googleTranslateSubscriptionService;
             _mapper = mapper;
@@ -26,7 +26,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
-            var subscriptions = _googleTranslateSubscriptionService.GetAllGoogleSubscriptions(userName);
+            var subscriptions = _googleTranslateSubscriptionService.GetAllSubscriptions(userName);
 
             var result = _mapper.Map<GoogleTranslateSubscriptionPLModel>(subscriptions);
 

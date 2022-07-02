@@ -11,10 +11,10 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
     [Route("[controller]")]
     public class FootballSubscriptionController : ControllerBase
     {
-        private readonly IFootballSubscriptionService _footballSubscriptionService;
+        private readonly ISubscriptionService<FootballSubscriptionBLModel> _footballSubscriptionService;
         private readonly IMapper _mapper;
 
-        public FootballSubscriptionController(IFootballSubscriptionService footballSubscriptionService, IMapper mapper)
+        public FootballSubscriptionController(ISubscriptionService<FootballSubscriptionBLModel> footballSubscriptionService, IMapper mapper)
         {
             _footballSubscriptionService = footballSubscriptionService;
             _mapper = mapper;
@@ -26,7 +26,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
-            var subscriptions = _footballSubscriptionService.GetAllFootballSubscriptions(userName);
+            var subscriptions = _footballSubscriptionService.GetAllSubscriptions(userName);
 
             var result = _mapper.Map<FootballSubscriptionPLModel>(subscriptions);
 

@@ -1,16 +1,58 @@
+using Configuration;
 using DataCollectionAndEmailMessageApplication.BL.Configuration;
+using DataCollectionAndEmailMessageApplication.DAL.Configuration;
 using DataCollectionAndEmailMessageApplication.Web.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.RegisterService();
-builder.Services.RegisterPLConfig();
+builder.Services.RegisterRepository();
+builder.Services.RegisterBLMappingConfig();
 builder.Services.RegisterPLMappingConfig();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(ApplicationConfiguration.JwtConfig));
+var key = Encoding.ASCII.GetBytes(builder.Configuration[ApplicationConfiguration.JwtSecret]);
+
+var tokenValidationParams = new TokenValidationParameters
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateIssuer = false,
+    ValidateAudience = false,
+    ValidateLifetime = true,
+    RequireExpirationTime = false,
+    ClockSkew = TimeSpan.Zero
+};
+
+builder.Services.AddSingleton(tokenValidationParams);
+
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(jwt => {
+    jwt.SaveToken = true;
+    jwt.TokenValidationParameters = tokenValidationParams;
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(ApplicationConfiguration.Cors, builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(ApplicationConfiguration.Policy,
+        policy => policy.RequireClaim(ApplicationConfiguration.PolicyClaim));
+});
 
 var app = builder.Build();
 
@@ -21,9 +63,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
+
+app.UseCors(ApplicationConfiguration.Cors);
 
 app.MapControllers();
 

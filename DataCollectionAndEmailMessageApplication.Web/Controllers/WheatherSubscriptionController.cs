@@ -11,10 +11,10 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
     [Route("[controller]")]
     public class WheatherSubscriptionController : ControllerBase
     {
-        private readonly IWheatherSubscriptionService _wheatherSubscriptionService;
+        private readonly ISubscriptionService<WheatherSubscriptionBLModel> _wheatherSubscriptionService;
         private readonly IMapper _mapper;
 
-        public WheatherSubscriptionController(IWheatherSubscriptionService wheatherSubscriptionService, IMapper mapper)
+        public WheatherSubscriptionController(ISubscriptionService<WheatherSubscriptionBLModel> wheatherSubscriptionService, IMapper mapper)
         {
             _wheatherSubscriptionService = wheatherSubscriptionService;
             _mapper = mapper;
@@ -26,7 +26,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
-            var subscriptions = _wheatherSubscriptionService.GetAllWheatherSubscriptions(userName);
+            var subscriptions = _wheatherSubscriptionService.GetAllSubscriptions(userName);
 
             var result = _mapper.Map<WheatherSubscriptionPLModel>(subscriptions);
 

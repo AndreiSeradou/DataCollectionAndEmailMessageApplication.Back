@@ -1,12 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
+using DataCollectionAndEmailMessageApplication.DAL.Models.DTOs;
+using DataCollectionAndEmailMessageApplication.DAL.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DataCollectionAndEmailMessageApplication.DAL.Configuration
 {
-    internal class DependenciesConfiguration
+    public static class DependenciesConfiguration
     {
+        public static IServiceCollection RegisterRepository(this IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddScoped<IUserRepository, UserRepository>();
+            serviceCollection.AddScoped<ISubscriptionRepository<WheatherSubscription>, WheatherSubscriptionRepository>();
+            serviceCollection.AddScoped<ISubscriptionRepository<FootballSubscription>, FootballSubscriptionRepository>();
+            serviceCollection.AddScoped<ISubscriptionRepository<GoogleTranslateSubscription>, GoogleTranslateSubscriptionRepository>();
+
+            return serviceCollection;
+        }
     }
 }

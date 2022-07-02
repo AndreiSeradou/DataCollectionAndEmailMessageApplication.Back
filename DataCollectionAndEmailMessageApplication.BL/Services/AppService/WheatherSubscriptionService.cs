@@ -6,21 +6,21 @@ using DataCollectionAndEmailMessageApplication.DAL.Models.DTOs;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
 {
-    public class WheatherSubscriptionService : IWheatherSubscriptionService
+    public class WheatherSubscriptionService : ISubscriptionService<WheatherSubscriptionBLModel>
     {
-        private readonly IWheatherSubscriptionRepository _wheatherSubscriptionRepository;
+        private readonly ISubscriptionRepository<WheatherSubscription> _wheatherSubscriptionRepository;
         private readonly IQuartzJobService _quartzJobService;
         private readonly IMapper _mapper;
 
 
-        public WheatherSubscriptionService(IWheatherSubscriptionRepository wheatherSubscriptionRepository, IMapper mapper, IQuartzJobService quartzJobService)
+        public WheatherSubscriptionService(ISubscriptionRepository<WheatherSubscription> wheatherSubscriptionRepository, IMapper mapper, IQuartzJobService quartzJobService)
         {
             _wheatherSubscriptionRepository = wheatherSubscriptionRepository;
             _mapper = mapper;
             _quartzJobService = quartzJobService;
         }
 
-        public ICollection<WheatherSubscriptionBLModel> GetAllWheatherSubscriptions(string userName)
+        public ICollection<WheatherSubscriptionBLModel> GetAllSubscriptions(string userName)
         {
             var subscriptions = _wheatherSubscriptionRepository.GetAll(userName);
             var result = _mapper.Map<ICollection<WheatherSubscriptionBLModel>>(subscriptions);

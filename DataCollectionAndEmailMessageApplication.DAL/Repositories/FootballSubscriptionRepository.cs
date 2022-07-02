@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 {
-    public class FootballSubscriptionRepository : IFootballSubscriptionRepository
+    public class FootballSubscriptionRepository : ISubscriptionRepository<FootballSubscription>
     {
         public bool Create(string userName, FootballSubscription model)
         {

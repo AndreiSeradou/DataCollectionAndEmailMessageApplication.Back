@@ -11,20 +11,20 @@ using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
 {
-    public class GoogleTranslateSubscriptionService : IGoogleTranslateSubscriptionService
+    public class GoogleTranslateSubscriptionService : ISubscriptionService<GoogleTranslateSubscriptionBLModel>
     {
-        private readonly IGoogleTranslateSubscriptionRepository _googleTranslateSubscriptionRepository;
+        private readonly ISubscriptionRepository<GoogleTranslateSubscription> _googleTranslateSubscriptionRepository;
         private readonly IQuartzJobService _quartzJobService;
         private readonly IMapper _mapper;
 
-        public GoogleTranslateSubscriptionService(IGoogleTranslateSubscriptionRepository googleTranslateSubscriptionRepository, IQuartzJobService quartzJobService, IMapper mapper)
+        public GoogleTranslateSubscriptionService(ISubscriptionRepository<GoogleTranslateSubscription> googleTranslateSubscriptionRepository, IQuartzJobService quartzJobService, IMapper mapper)
         {
             _googleTranslateSubscriptionRepository = googleTranslateSubscriptionRepository;
             _quartzJobService = quartzJobService;
             _mapper = mapper;
         }
 
-        public ICollection<GoogleTranslateSubscriptionBLModel> GetAllGoogleSubscriptions(string userName)
+        public ICollection<GoogleTranslateSubscriptionBLModel> GetAllSubscriptions(string userName)
         {
             var subscriptions = _googleTranslateSubscriptionRepository.GetAll(userName);
             var result = _mapper.Map<ICollection<GoogleTranslateSubscriptionBLModel>>(subscriptions);

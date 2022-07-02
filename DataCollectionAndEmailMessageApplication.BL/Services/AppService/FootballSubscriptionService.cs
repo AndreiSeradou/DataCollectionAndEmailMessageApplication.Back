@@ -11,20 +11,20 @@ using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
 {
-    public class FootballSubscriptionService : IFootballSubscriptionService
+    public class FootballSubscriptionService : ISubscriptionService<FootballSubscriptionBLModel>
     {
-        private readonly IFootballSubscriptionRepository _footballSubscriptionRepository;
+        private readonly ISubscriptionRepository<FootballSubscription> _footballSubscriptionRepository;
         private readonly IQuartzJobService _quartzJobService;
         private readonly IMapper _mapper;
 
-        public FootballSubscriptionService(IFootballSubscriptionRepository footballSubscriptionRepository, IQuartzJobService quartzJobService, IMapper mapper)
+        public FootballSubscriptionService(ISubscriptionRepository<FootballSubscription> footballSubscriptionRepository, IQuartzJobService quartzJobService, IMapper mapper)
         {
             _footballSubscriptionRepository = footballSubscriptionRepository;
             _quartzJobService = quartzJobService;
             _mapper = mapper;
         }
 
-        public ICollection<FootballSubscriptionBLModel> GetAllFootballSubscriptions(string userName)
+        public ICollection<FootballSubscriptionBLModel> GetAllSubscriptions(string userName)
         {
             var subscriptions = _footballSubscriptionRepository.GetAll(userName);
             var result = _mapper.Map<ICollection<FootballSubscriptionBLModel>>(subscriptions);

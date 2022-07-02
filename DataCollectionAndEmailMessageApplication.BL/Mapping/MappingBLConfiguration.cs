@@ -14,6 +14,8 @@ namespace DataCollectionAndEmailMessageApplication.BL.Mapping
         public MappingBLConfiguration()
         {
             CreateMap<WheatherSubscriptionBLModel, WheatherSubscription>().ReverseMap();
+            CreateMap<FootballSubscriptionBLModel, FootballSubscription>().ReverseMap();
+            CreateMap<GoogleTranslateSubscriptionBLModel, GoogleTranslateSubscription>().ReverseMap();
         }
     }
 }

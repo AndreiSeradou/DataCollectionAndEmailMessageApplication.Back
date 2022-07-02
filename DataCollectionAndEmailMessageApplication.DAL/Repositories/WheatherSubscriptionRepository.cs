@@ -10,7 +10,7 @@ using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
 
 namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 {
-    public class WheatherSubscriptionRepository : IWheatherSubscriptionRepository
+    public class WheatherSubscriptionRepository : ISubscriptionRepository<WheatherSubscription>
     {
         public ICollection<WheatherSubscription> GetAll(string userName)
         {

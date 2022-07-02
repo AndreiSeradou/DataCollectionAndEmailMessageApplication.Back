@@ -9,6 +9,8 @@ namespace DataCollectionAndEmailMessageApplication.Web.Mapping
         public MappingPLConfiguration()
         {
             CreateMap<WheatherSubscriptionBLModel, WheatherSubscriptionPLModel>().ReverseMap();
+            CreateMap<GoogleTranslateSubscriptionBLModel, GoogleTranslateSubscriptionPLModel>().ReverseMap();
+            CreateMap<FootballSubscriptionBLModel, FootballSubscriptionPLModel>().ReverseMap();
         }
     }
 }

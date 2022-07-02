@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 {
-    public class GoogleTranslateSubscriptionRepository : IGoogleTranslateSubscriptionRepository
+    public class GoogleTranslateSubscriptionRepository : ISubscriptionRepository<GoogleTranslateSubscription>
     {
         public bool Create(string userName, GoogleTranslateSubscription model)
         {
