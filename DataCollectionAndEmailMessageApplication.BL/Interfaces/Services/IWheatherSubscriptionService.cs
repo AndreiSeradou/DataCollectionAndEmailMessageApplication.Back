@@ -9,9 +9,9 @@ namespace DataCollectionAndEmailMessageApplication.BL.Interfaces.Services
 {
     public interface IWheatherSubscriptionService
     {
-        ICollection<WheatherSubscriptionBLModel> GetAllWheatherSubscriptions(int userId);
-        Task<bool> SubscribeAsync(int userId, WheatherSubscriptionBLModel model);
-        Task<bool> UpdateSubscriptionAsync(int userId, WheatherSubscriptionBLModel model);
-        bool Unsubscribe(WheatherSubscriptionBLModel model);
+        ICollection<WheatherSubscriptionBLModel> GetAllWheatherSubscriptions(string userName);
+        Task<bool> SubscribeAsync(string userName, WheatherSubscriptionBLModel model);
+        Task<bool> UpdateSubscriptionAsync(string userName, WheatherSubscriptionBLModel model);
+        bool Unsubscribe(string userName, WheatherSubscriptionBLModel model);
     }
 }

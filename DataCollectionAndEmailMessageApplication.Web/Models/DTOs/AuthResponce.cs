@@ -1,4 +1,4 @@
-﻿namespace DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Responce
+﻿namespace DataCollectionAndEmailMessageApplication.Web.Models.DTOs
 {
     public class AuthResponce
     {

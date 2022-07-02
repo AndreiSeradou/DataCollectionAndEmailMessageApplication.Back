@@ -1,6 +1,6 @@
-﻿namespace DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Request
+﻿namespace DataCollectionAndEmailMessageApplication.Web.Models.DTOs
 {
-    public class WheatherSubscribeRequest
+    public class WheatherSubscriptionPLModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -8,6 +8,6 @@
         public string CronParams { get; set; }
         public string City { get; set; }
         public string Date { get; set; }
-        public int UserId { get; set; }
+        public string UserName { get; set; }
     }
 }

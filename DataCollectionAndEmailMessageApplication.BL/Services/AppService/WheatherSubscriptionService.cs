@@ -20,61 +20,44 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.AppService
             _quartzJobService = quartzJobService;
         }
 
-        public ICollection<WheatherSubscriptionBLModel> GetAllWheatherSubscriptions(int userId)
+        public ICollection<WheatherSubscriptionBLModel> GetAllWheatherSubscriptions(string userName)
         {
-            var subscriptions = _wheatherSubscriptionRepository.GetAll(userId).Where(s => s.UserId == userId);
+            var subscriptions = _wheatherSubscriptionRepository.GetAll(userName);
             var result = _mapper.Map<ICollection<WheatherSubscriptionBLModel>>(subscriptions);
 
             return result;
         }
 
-        public async Task<bool> SubscribeAsync(int userId, WheatherSubscriptionBLModel model)
+        public async Task<bool> SubscribeAsync(string userName, WheatherSubscriptionBLModel model)
         {
-            try
-            {
-                var dalModel = _mapper.Map<WheatherSubscription>(model);
-                
-                _wheatherSubscriptionRepository.Create(dalModel);
+            var dalModel = _mapper.Map<WheatherSubscription>(model);
+            var result = _wheatherSubscriptionRepository.Create(userName, dalModel);
+
+            if (result)
                 await _quartzJobService.CreateJobAsync(model);
-            }
-            catch
-            {
-                return false;
-            }
 
-            return true;
+            return result;
         }
 
-        public bool Unsubscribe(WheatherSubscriptionBLModel model)
+        public bool Unsubscribe(string userName, WheatherSubscriptionBLModel model)
         {
-            try
-            {
-                _wheatherSubscriptionRepository.Delete(model.Id);
+            var result = _wheatherSubscriptionRepository.Delete(userName, model.Id);
+
+            if (result)
                 _quartzJobService.DeleteJob(model);
-            }
-            catch
-            {
-                return false;
-            }
 
-            return true;
+            return result;
         }
 
-        public async Task<bool> UpdateSubscriptionAsync(int userId, WheatherSubscriptionBLModel model)
+        public async Task<bool> UpdateSubscriptionAsync(string userName, WheatherSubscriptionBLModel model)
         {
-            try
-            {
-                var dalModel = _mapper.Map<WheatherSubscription>(model);
+            var dalModel = _mapper.Map<WheatherSubscription>(model);
+            var result = _wheatherSubscriptionRepository.Update(userName, dalModel);
 
-                _wheatherSubscriptionRepository.Update(dalModel);
+            if (result)
                 await _quartzJobService.UpdateJobAsync(model);
-            }
-            catch
-            {   
-                return false;
-            }
 
-            return true;
+            return result;
         }
     }
 }

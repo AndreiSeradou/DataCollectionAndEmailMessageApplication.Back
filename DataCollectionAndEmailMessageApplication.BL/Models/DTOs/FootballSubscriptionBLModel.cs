@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Models.DTOs
 {
-    internal class FootballSubscriptionBLModel
+    public class FootballSubscriptionBLModel
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string CronParams { get; set; }
+        public string UserName { get; set; }
     }
 }

@@ -1,60 +1,73 @@
 ﻿using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
 using DataCollectionAndEmailMessageApplication.DAL.Models.DTOs;
 using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public void Create(User model)
+        public bool Create(User model)
         {
-            using (var connection = new SqliteConnection("Data Source=usersdata.db"))
-            {
-                connection.Open();
+            var sqlExpression = $"INSERT INTO User (name,email,password,role) VALUES ('{model.Name}','{model.Email}','{model.Password}','{model.Role}')";
+            int result;
 
-                SqliteCommand command = new SqliteCommand();
-                command.Connection = connection;
-                command.CommandText = "INSERT INTO Users (Name, Age) VALUES ('Tom', 36)";
-                int number = command.ExecuteNonQuery();
-            }
-        }
-
-        public void Delete(int id)
-        {
-            string sqlExpression = "DELETE  FROM Users WHERE Name='Tom'";
-            using (var connection = new SqliteConnection("Data Source=usersdata.db"))
-            {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                int number = command.ExecuteNonQuery();
-
-                Console.WriteLine($"Удалено объектов: {number}");
-            }
-        }
-
-        public ICollection<User> GetAll()
-        {
-            List<User> userList = new List<User>();
-            string sqlExpression = "SELECT * FROM Subscription WHERE UserId = userId";
             using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
             {
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                result = command.ExecuteNonQuery();
+            }
+
+            if (result < 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool Delete(int id)
+        {
+            string sqlExpression = $"DELETE  FROM User WHERE id='{id}'";
+            int result;
+
+            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            {
+                connection.Open();
+
+                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                result = command.ExecuteNonQuery();
+            }
+
+            if (result < 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public ICollection<User> GetAll()
+        {
+            List<User> userList = new List<User>();
+            string sqlExpression = "SELECT * FROM User";
+
+            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            {
+                connection.Open();
+
+                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            userList.Add(new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2) });
+                            userList.Add(new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4) });
                         }
                     }
                 }
@@ -66,25 +79,19 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
         public User GetByEmail(string userEmail)
         {
             User user = default;
+            var sqlExpression = $"SELECT * FROM User WHERE email = {userEmail}";
 
-            using (var connection = new SqliteConnection("Data Source=hello.db"))
+            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
             {
                 connection.Open();
 
-                var command = connection.CreateCommand();
-                command.CommandText =
-                @"
-        SELECT name
-        FROM user
-        WHERE id = $id
-    ";
-                command.Parameters.AddWithValue("$name", userEmail);
+                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
 
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2) };
+                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4) };
                     }
                 }
             }
@@ -95,25 +102,19 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
         public User GetByName(string userName)
         {
             User user = default;
+            var sqlExpression = $"SELECT * FROM User WHERE name = {userName}";
 
-            using (var connection = new SqliteConnection("Data Source=hello.db"))
+            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
             {
                 connection.Open();
 
-                var command = connection.CreateCommand();
-                command.CommandText =
-                @"
-        SELECT name
-        FROM user
-        WHERE id = $id
-    ";
-                command.Parameters.AddWithValue("$name", userName);
+                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
 
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2) };
+                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4) };
                     }
                 }
             }
@@ -121,17 +122,26 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             return user;
         }
 
-        public void Update(User model)
+        public bool Update(User model)
         {
-            string sqlExpression = "UPDATE Users SET Age=20 WHERE Name='Tom'";
-            using (var connection = new SqliteConnection("Data Source=usersdata.db"))
+            string sqlExpression = $"UPDATE User SET name = {model.Name}, email = {model.Email}, role = {model.Role}  WHERE name='{model.Name}'";
+            int result;
+
+            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
             {
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
 
-                int number = command.ExecuteNonQuery();
+                result = command.ExecuteNonQuery();
             }
+
+            if (result < 1)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -12,5 +12,11 @@ namespace DataCollectionAndEmailMessageApplication.BL.Interfaces.Services
         Task CreateJobAsync(WheatherSubscriptionBLModel model);
         Task UpdateJobAsync(WheatherSubscriptionBLModel model);
         void DeleteJob(WheatherSubscriptionBLModel model);
+        Task CreateJobAsync(FootballSubscriptionBLModel model);
+        Task UpdateJobAsync(FootballSubscriptionBLModel model);
+        void DeleteJob(FootballSubscriptionBLModel model);
+        Task CreateJobAsync(GoogleTranslateSubscriptionBLModel model);
+        Task UpdateJobAsync(GoogleTranslateSubscriptionBLModel model);
+        void DeleteJob(GoogleTranslateSubscriptionBLModel model);
     }
 }

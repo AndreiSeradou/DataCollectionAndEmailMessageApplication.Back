@@ -7,8 +7,6 @@ using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using DataCollectionAndEmailMessageApplication.Web.Configuration;
 using DataCollectionAndEmailMessageApplication.Web.Models.DTOs;
-using DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Request;
-using DataCollectionAndEmailMessageApplication.Web.Models.DTOs.Responce;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -36,16 +34,18 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var existingUserByEmail = _userService.GetAllUsers().Where(u => u.Email == user.Email || u.Name == user.Name);
+                var existingUserByNameAndEmail = _userService.IsExistihgUserByNameAndEmail(user.Name, user.Email);
 
-                if (existingUserByEmail != null)
+                if (existingUserByNameAndEmail)
                 {
-                    return BadRequest(new AuthResponce(){
-                            Errors = new List<string>() {
-                                ApplicationConfiguration.ErrorName,
-                                ApplicationConfiguration.ErrorEmail
-                            },
-                            Success = false
+                    return BadRequest(new AuthResponce()
+                    {
+                        Errors = new List<string>()
+                        {
+                            ApplicationConfiguration.ErrorName,
+                            ApplicationConfiguration.ErrorEmail
+                        },
+                        Success = false
                     });
                 }
 
@@ -58,15 +58,13 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
                     var jwtToken = await GenerateJwtToken( newUser);
                     
                     return Ok(jwtToken);
-                } 
-                else 
-                {
-                    return BadRequest(new AuthResponce()
-                    {
-                            Errors = new List<string> { ApplicationConfiguration.InvalidModel },
-                            Success = false,
-                    });
                 }
+
+                return BadRequest(new AuthResponce()
+                {
+                    Errors = new List<string> { ApplicationConfiguration.InvalidModel },
+                    Success = false,
+                });
             }
 
             return BadRequest(new AuthResponce()

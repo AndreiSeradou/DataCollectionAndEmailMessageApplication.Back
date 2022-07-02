@@ -1,34 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using Configuration;
-using DataCollectionAndEmailMessageApplication.Web.Models.DTOs;
 using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
-using AutoMapper;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
+using DataCollectionAndEmailMessageApplication.Web.Models.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WheatherSubscriptionController : ControllerBase
+    public class FootballSubscriptionController : ControllerBase
     {
-        private readonly IWheatherSubscriptionService _wheatherSubscriptionService;
+        private readonly IFootballSubscriptionService _footballSubscriptionService;
         private readonly IMapper _mapper;
 
-        public WheatherSubscriptionController(IWheatherSubscriptionService wheatherSubscriptionService, IMapper mapper)
+        public FootballSubscriptionController(IFootballSubscriptionService footballSubscriptionService, IMapper mapper)
         {
-            _wheatherSubscriptionService = wheatherSubscriptionService;
+            _footballSubscriptionService = footballSubscriptionService;
             _mapper = mapper;
         }
 
         [HttpGet]
-        [Route("AllWheatherSubscriptions")]
-        public IActionResult GetAllWheatherSubscriptionsAsync()
+        [Route("AllFootballSubscriptions")]
+        public IActionResult GetAllFootballSubscriptionsAsync()
         {
             var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
-            var subscriptions = _wheatherSubscriptionService.GetAllWheatherSubscriptions(userName);
+            var subscriptions = _footballSubscriptionService.GetAllFootballSubscriptions(userName);
 
-            var result = _mapper.Map<WheatherSubscriptionPLModel>(subscriptions);
+            var result = _mapper.Map<FootballSubscriptionPLModel>(subscriptions);
 
             if (result == null)
                 return NotFound();
@@ -39,15 +39,15 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 
         [HttpPost]
         [Route("Subscribe")]
-        public IActionResult Subscribe([FromBody] WheatherSubscriptionPLModel model)
+        public IActionResult Subscribe([FromBody] FootballSubscriptionPLModel model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
-                var blModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
+                var blModel = _mapper.Map<FootballSubscriptionBLModel>(model);
 
-                var result = _wheatherSubscriptionService.SubscribeAsync(userName, blModel);
+                var result = _footballSubscriptionService.SubscribeAsync(userName, blModel);
 
                 return Ok(result);
             }
@@ -56,16 +56,16 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         }
 
         [HttpPut]
-        [Route("UpdateWheatherSubscription")]
-        public async Task<IActionResult> UpdateWheatherSubscription([FromBody] WheatherSubscriptionPLModel model)
-        {     
+        [Route("UpdateFootballSubscription")]
+        public async Task<IActionResult> UpdateFootballSubscription([FromBody] FootballSubscriptionPLModel model)
+        {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
-                var blModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
+                var blModel = _mapper.Map<FootballSubscriptionBLModel>(model);
 
-                var result = await _wheatherSubscriptionService.UpdateSubscriptionAsync(userName, blModel);
+                var result = await _footballSubscriptionService.UpdateSubscriptionAsync(userName, blModel);
 
                 if (result == false)
                     return NotFound();
@@ -78,13 +78,13 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 
         [HttpDelete]
         [Route("Unsubscribe")]
-        public IActionResult Unsubscribe([FromBody] WheatherSubscriptionPLModel model)
+        public IActionResult Unsubscribe([FromBody] FootballSubscriptionPLModel model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
-                var blModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
-                var result = _wheatherSubscriptionService.Unsubscribe(userName, blModel);
+                var blModel = _mapper.Map<FootballSubscriptionBLModel>(model);
+                var result = _footballSubscriptionService.Unsubscribe(userName, blModel);
 
                 if (result == false)
                     return NotFound();
