@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
-
+using Configuration;
 
 namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 {
@@ -17,7 +17,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             List<WheatherSubscription> subList = new List<WheatherSubscription>();
             string sqlExpression = $"SELECT * FROM WheatherSubscription WHERE userName = {userName}";
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -29,7 +29,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
                     {
                         while (reader.Read()) 
                         {
-                            subList.Add(new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserName = reader.GetString(4),  City = reader.GetString(5),  Date = reader.GetString(6) });
+                            subList.Add(new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserName = reader.GetString(7),  City = reader.GetString(4),  Date = reader.GetString(5), LastRunTime = reader.GetDateTime(6) });
                         }
                     }
                 }
@@ -43,7 +43,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             WheatherSubscription wheatherSubscription = default;
             var sqlExpression = $"SELECT * FROM WheatherSubscription WHERE id = {id} AND userName = {userName}";
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -53,7 +53,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        wheatherSubscription = new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserName = reader.GetString(4), City = reader.GetString(5), Date = reader.GetString(6) };
+                        wheatherSubscription = new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserName = reader.GetString(7), City = reader.GetString(4), Date = reader.GetString(5), LastRunTime = reader.GetDateTime(6) };
                     }
                 }
             }
@@ -63,10 +63,10 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 
         public bool Create(string userName, WheatherSubscription model)
         {
-            var sqlExpression = $"INSERT INTO WheatherSubscription (name,cronParams,date,description,city,userName) VALUES ('{model.Name}','{model.CronParams}','{model.Date}','{model.Description}','{model.City}','{userName}')";
+            var sqlExpression = $"INSERT INTO WheatherSubscription (name,cronParams,date,description,city,lastruntime,userName) VALUES ('{model.Name}','{model.CronParams}','{model.Date}','{model.Description}','{model.City}',{model.LastRunTime},'{userName}')";
             int result;
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -85,10 +85,10 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 
         public bool Update(string userName, WheatherSubscription model)
         {
-            string sqlExpression = $"UPDATE WheatherSubscription SET name = {model.Name}, cronParams = {model.CronParams}, date = {model.Date}, description = {model.Description}, city = {model.City}, userName = {model.UserName}  WHERE Name='{userName}'";
+            string sqlExpression = $"UPDATE WheatherSubscription SET name = {model.Name}, cronParams = {model.CronParams}, date = {model.Date}, description = {model.Description}, city = {model.City}, userName = {model.UserName}, lastruntime = {model.LastRunTime}  WHERE Name='{userName}'";
             int result;
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -110,7 +110,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             string sqlExpression = $"DELETE  FROM WheatherSubscription WHERE id='{id}' And userName = '{userName}'";
             int result;
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 

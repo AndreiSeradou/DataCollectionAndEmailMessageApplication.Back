@@ -3,6 +3,8 @@ using Configuration;
 using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using DataCollectionAndEmailMessageApplication.Web.Models.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -10,6 +12,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = ApplicationConfiguration.UserRole)]
     public class FootballSubscriptionController : ControllerBase
     {
         private readonly ISubscriptionService<FootballSubscriptionBLModel> _footballSubscriptionService;
@@ -22,14 +25,14 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         }
 
         [HttpGet]
-        [Route("AllFootballSubscriptions")]
-        public IActionResult GetAllFootballSubscriptionsAsync()
+        [Route("GetAllFootballSubscriptions")]
+        public IActionResult GetAllFootballSubscriptions()
         {
             var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
             var subscriptions = _footballSubscriptionService.GetAllSubscriptions(userName);
 
-            var result = _mapper.Map<FootballSubscriptionPLModel>(subscriptions);
+            var result = _mapper.Map<ICollection<FootballSubscriptionPLModel>>(subscriptions);
 
             if (result == null)
                 return NotFound();
@@ -59,7 +62,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 
         [HttpPut]
         [Route("UpdateFootballSubscription")]
-        public async Task<IActionResult> UpdateFootballSubscription([FromBody] FootballSubscriptionPLModel model)
+        public async Task<IActionResult> UpdateFootballSubscriptionAsync([FromBody] FootballSubscriptionPLModel model)
         {
             if (ModelState.IsValid)
             {

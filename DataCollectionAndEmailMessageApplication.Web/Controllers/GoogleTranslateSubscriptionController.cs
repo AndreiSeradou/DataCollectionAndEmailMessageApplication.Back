@@ -3,6 +3,8 @@ using Configuration;
 using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using DataCollectionAndEmailMessageApplication.Web.Models.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -10,6 +12,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = ApplicationConfiguration.UserRole)]
     public class GoogleTranslateSubscriptionController : ControllerBase
     {
         private readonly ISubscriptionService<GoogleTranslateSubscriptionBLModel> _googleTranslateSubscriptionService;
@@ -22,14 +25,14 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         }
 
         [HttpGet]
-        [Route("AllGoogleSubscriptions")]
-        public IActionResult GetAllGoogleSubscriptionsAsync()
+        [Route("GetAllGoogleSubscriptions")]
+        public IActionResult GetAllGoogleSubscriptions()
         {
             var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
             var subscriptions = _googleTranslateSubscriptionService.GetAllSubscriptions(userName);
 
-            var result = _mapper.Map<GoogleTranslateSubscriptionPLModel>(subscriptions);
+            var result = _mapper.Map< ICollection<GoogleTranslateSubscriptionPLModel>>(subscriptions);
 
             if (result == null)
                 return NotFound();
@@ -59,7 +62,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 
         [HttpPut]
         [Route("UpdateGoogleSubscription")]
-        public async Task<IActionResult> UpdateGoogleSubscription([FromBody] GoogleTranslateSubscriptionPLModel model)
+        public async Task<IActionResult> UpdateGoogleSubscriptionAsync([FromBody] GoogleTranslateSubscriptionPLModel model)
         {
             if (ModelState.IsValid)
             {

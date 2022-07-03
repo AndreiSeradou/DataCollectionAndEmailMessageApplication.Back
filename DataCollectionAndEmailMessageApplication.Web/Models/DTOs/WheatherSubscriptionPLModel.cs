@@ -8,6 +8,7 @@
         public string CronParams { get; set; }
         public string City { get; set; }
         public string Date { get; set; }
+        public DateTime LastRunTime { get; set; }
         public string UserName { get; set; }
     }
 }

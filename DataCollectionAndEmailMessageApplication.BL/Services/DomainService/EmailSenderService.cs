@@ -1,12 +1,8 @@
 ﻿using Configuration;
 using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Services.DomainService
 {
@@ -16,30 +12,30 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.DomainService
         {
             try
             {
-                SmtpClient client = new SmtpClient("smtp.gmail.com", 25);
+                SmtpClient client = new SmtpClient(ApplicationConfiguration.MailSmtp, 25);
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.UseDefaultCredentials = false;
-                client.Credentials = new System.Net.NetworkCredential("andrey03072000@gmail.com", "7798929aQ");
+                client.Credentials = new System.Net.NetworkCredential(ApplicationConfiguration.QuartzEmail, ApplicationConfiguration.QuartzPassword);
                 client.EnableSsl = true;
 
-                var mail = new MailMessage("andrey03072000@gmail.com", email);
+                var mail = new MailMessage(ApplicationConfiguration.QuartzEmail, email);
 
                 using (MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
                 {
-                    Attachment attachment = new Attachment(stream, new ContentType("text/csv"));
-                    attachment.Name = "result.csv";
+                    Attachment attachment = new Attachment(stream, new ContentType(ApplicationConfiguration.FileFormat));
+                    attachment.Name = ApplicationConfiguration.FileName;
                     mail.Attachments.Add(attachment);
                 }
 
-                mail.Subject = "Information alert";
-                mail.Body = string.Format("infarmation about your subscription");
+                mail.Subject = ApplicationConfiguration.MailSubject;
+                mail.Body = ApplicationConfiguration.EmailMessage;
                 mail.IsBodyHtml = true;
 
                 await client.SendMailAsync(mail);
             }
             catch
             {
-                Console.WriteLine("Not Send");
+                Console.WriteLine(ApplicationConfiguration.ErrorSend);
             }
         }
     }
