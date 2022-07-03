@@ -1,4 +1,5 @@
-﻿using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
+﻿using Configuration;
+using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using System;
 using System.Collections.Generic;
@@ -15,13 +16,13 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.DomainService
         {
             try
             {
-                var webRequest = WebRequest.Create("https://api-football-v1.p.rapidapi.com/v3/leagues");
+                var webRequest = WebRequest.Create(ApplicationConfiguration.RapidApiFootballUrl);
 
                 if (webRequest != null)
                 {
                     webRequest.Method = "GET";
                     webRequest.Timeout = 12000;
-                    webRequest.Headers.Add("X-RapidAPI-Key", "SIGN-UP-FOR-KEY");
+                    webRequest.Headers.Add("X-RapidAPI-Key", ApplicationConfiguration.RapidApiKey);
                     webRequest.Headers.Add("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com");
 
                     using (Stream s = webRequest.GetResponse().GetResponseStream())

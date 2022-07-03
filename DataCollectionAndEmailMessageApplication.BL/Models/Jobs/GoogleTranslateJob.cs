@@ -1,4 +1,5 @@
-﻿using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
+﻿using Configuration;
+using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using Quartz;
 using System;
@@ -24,7 +25,7 @@ namespace DataCollectionAndEmailMessageApplication.BL.Models.Jobs
         {
             var jobData = context.JobDetail.JobDataMap;
 
-            var email = jobData.GetString("Email");
+            var email = jobData.GetString(ApplicationConfiguration.JobMainParam);
 
             var apiResult = _apiSenderService.SendOnApi();
 

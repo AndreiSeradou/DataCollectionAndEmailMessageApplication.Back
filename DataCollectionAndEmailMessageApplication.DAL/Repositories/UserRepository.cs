@@ -1,4 +1,5 @@
-﻿using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
+﻿using Configuration;
+using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
 using DataCollectionAndEmailMessageApplication.DAL.Models.DTOs;
 using Microsoft.Data.Sqlite;
 
@@ -11,7 +12,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             var sqlExpression = $"INSERT INTO User (name,email,password,role) VALUES ('{model.Name}','{model.Email}','{model.Password}','{model.Role}')";
             int result;
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -33,7 +34,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             string sqlExpression = $"DELETE  FROM User WHERE id='{id}'";
             int result;
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -55,7 +56,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             List<User> userList = new List<User>();
             string sqlExpression = "SELECT * FROM User";
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -81,7 +82,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             User user = default;
             var sqlExpression = $"SELECT * FROM User WHERE email = {userEmail}";
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -104,7 +105,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             User user = default;
             var sqlExpression = $"SELECT * FROM User WHERE name = {userName}";
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -127,7 +128,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             string sqlExpression = $"UPDATE User SET name = {model.Name}, email = {model.Email}, role = {model.Role}  WHERE name='{model.Name}'";
             int result;
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 

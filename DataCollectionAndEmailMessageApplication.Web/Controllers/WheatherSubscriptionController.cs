@@ -5,11 +5,14 @@ using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using AutoMapper;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = ApplicationConfiguration.UserRole)]
     public class WheatherSubscriptionController : ControllerBase
     {
         private readonly ISubscriptionService<WheatherSubscriptionBLModel> _wheatherSubscriptionService;
@@ -22,14 +25,14 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
         }
 
         [HttpGet]
-        [Route("AllWheatherSubscriptions")]
-        public IActionResult GetAllWheatherSubscriptionsAsync()
+        [Route("GetAllWheatherSubscriptions")]
+        public IActionResult GetAllWheatherSubscriptions()
         {
             var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
             var subscriptions = _wheatherSubscriptionService.GetAllSubscriptions(userName);
 
-            var result = _mapper.Map<WheatherSubscriptionPLModel>(subscriptions);
+            var result = _mapper.Map<ICollection<WheatherSubscriptionPLModel>>(subscriptions);
 
             if (result == null)
                 return NotFound();
@@ -59,7 +62,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
 
         [HttpPut]
         [Route("UpdateWheatherSubscription")]
-        public async Task<IActionResult> UpdateWheatherSubscription([FromBody] WheatherSubscriptionPLModel model)
+        public async Task<IActionResult> UpdateWheatherSubscriptionAsync([FromBody] WheatherSubscriptionPLModel model)
         {     
             if (ModelState.IsValid)
             {

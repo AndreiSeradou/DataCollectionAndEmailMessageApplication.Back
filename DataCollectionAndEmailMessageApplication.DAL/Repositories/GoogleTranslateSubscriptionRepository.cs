@@ -1,4 +1,5 @@
-﻿using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
+﻿using Configuration;
+using DataCollectionAndEmailMessageApplication.DAL.Interfaces.Repositories;
 using DataCollectionAndEmailMessageApplication.DAL.Models.DTOs;
 using Microsoft.Data.Sqlite;
 using System;
@@ -13,10 +14,10 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
     {
         public bool Create(string userName, GoogleTranslateSubscription model)
         {
-            var sqlExpression = $"INSERT INTO GoogleSubscription (name,cronParams,description,userName) VALUES ('{model.Name}','{model.CronParams}','{model.Description}','{userName}')";
+            var sqlExpression = $"INSERT INTO GoogleSubscription (name,cronParams,description,lastruntime,userName) VALUES ('{model.Name}','{model.CronParams}','{model.Description}',{model.LastRunTime},'{userName}')";
             int result;
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -38,7 +39,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             string sqlExpression = $"DELETE  FROM GoogleSubscription WHERE id='{id}' And userName = '{userName}'";
             int result;
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -60,7 +61,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             List<GoogleTranslateSubscription> subList = new List<GoogleTranslateSubscription>();
             string sqlExpression = $"SELECT * FROM GoogleSubscription WHERE userName = {userName}";
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -72,7 +73,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
                     {
                         while (reader.Read())
                         {
-                            subList.Add(new GoogleTranslateSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserName = reader.GetString(4) });
+                            subList.Add(new GoogleTranslateSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), LastRunTime = reader.GetDateTime(4), UserName = reader.GetString(5) }); 
                         }
                     }
                 }
@@ -86,7 +87,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
             GoogleTranslateSubscription googleSubscription = default;
             var sqlExpression = $"SELECT * FROM GoogleSubscription WHERE id = {id} AND userName = {userName}";
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 
@@ -96,7 +97,7 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        googleSubscription = new GoogleTranslateSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserName = reader.GetString(4) };
+                        googleSubscription = new GoogleTranslateSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), LastRunTime = reader.GetDateTime(4), UserName = reader.GetString(5) };
                     }
                 }
             }
@@ -106,10 +107,10 @@ namespace DataCollectionAndEmailMessageApplication.DAL.Repositories
 
         public bool Update(string userName, GoogleTranslateSubscription model)
         {
-            string sqlExpression = $"UPDATE GoogleSubscription SET name = {model.Name}, cronParams = {model.CronParams}, description = {model.Description}, userName = {model.UserName}  WHERE Name='{userName}'";
+            string sqlExpression = $"UPDATE GoogleSubscription SET name = {model.Name}, cronParams = {model.CronParams}, description = {model.Description}, userName = {model.UserName}, lastruntime = {model.LastRunTime} WHERE Name='{userName}'";
             int result;
 
-            using (var connection = new SqliteConnection("Data Source=subscriptiondata.db"))
+            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
             {
                 connection.Open();
 

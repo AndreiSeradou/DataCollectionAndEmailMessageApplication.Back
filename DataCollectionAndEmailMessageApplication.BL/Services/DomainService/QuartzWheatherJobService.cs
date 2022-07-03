@@ -1,4 +1,5 @@
-﻿using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
+﻿using Configuration;
+using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
 using DataCollectionAndEmailMessageApplication.BL.Models.Jobs;
 using Quartz;
@@ -25,7 +26,7 @@ namespace DataCollectionAndEmailMessageApplication.BL.Services.DomainService
                 .WithIdentity(model.Id.ToString(), model.UserName).WithCronSchedule(model.CronParams).Build();
 
             var jobDetail = JobBuilder.Create<WheatherJob>()
-                 .UsingJobData("City", model.City).UsingJobData("Date", model.Date).UsingJobData("Email", email).WithIdentity(model.Id.ToString(), model.UserName).Build();
+                 .UsingJobData(ApplicationConfiguration.WheatherParam1, model.City).UsingJobData(ApplicationConfiguration.WheatherParam2, model.Date).UsingJobData(ApplicationConfiguration.JobMainParam, email).WithIdentity(model.Id.ToString(), model.UserName).Build();
 
             await _scheduler.ScheduleJob(jobDetail, trigger);
         }

@@ -49,7 +49,7 @@ namespace DataCollectionAndEmailMessageApplication.Web.Controllers
                     });
                 }
 
-                var newUser = new UserPLModel() { Email = user.Email, Name  = user.Name, Password = user.Password, Role = "User"};
+                var newUser = new UserPLModel() { Email = user.Email, Name  = user.Name, Password = user.Password, Role = ApplicationConfiguration.UserRole};
                 var userPLModel = _mapper.Map<UserBLModel>(newUser);
                 var isCreated = _userService.CreateUser(userPLModel);
 
