@@ -2,12 +2,7 @@
 using Configuration;
 using DataCollectionAndEmailMessageApplication.BL.Interfaces.Services;
 using DataCollectionAndEmailMessageApplication.BL.Models.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataCollectionAndEmailMessageApplication.BL.Services.DomainService
 {
