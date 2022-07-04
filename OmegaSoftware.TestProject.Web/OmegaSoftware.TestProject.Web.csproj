@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="MyTested.AspNetCore.Mvc.ModelState" Version="5.0.0" />
+    <PackageReference Include="Quartz" Version="3.4.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OmegaSoftware.TestProject.BL.App\OmegaSoftware.TestProject.BL.App.csproj" />
+    <ProjectReference Include="..\OmegaSoftware.TestProject.BL.Domain\OmegaSoftware.TestProject.BL.Domain.csproj" />
+    <ProjectReference Include="..\OmegaSoftware.TestProject.Configuration\OmegaSoftware.TestProject.Configuration.csproj" />
+    <ProjectReference Include="..\OmegaSoftware.TestProject.DAL\OmegaSoftware.TestProject.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

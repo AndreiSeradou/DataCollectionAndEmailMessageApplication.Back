@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OmegaSoftware.TestProject.BL.Domain\OmegaSoftware.TestProject.BL.Domain.csproj" />
+    <ProjectReference Include="..\OmegaSoftware.TestProject.Configuration\OmegaSoftware.TestProject.Configuration.csproj" />
+    <ProjectReference Include="..\OmegaSoftware.TestProject.DAL\OmegaSoftware.TestProject.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Quartz" Version="3.4.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.4.0" />
+  </ItemGroup>
+
+</Project>
