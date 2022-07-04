@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "OmegaSoftware.TestProject.Configuration": {
+      "commandName": "Project"
+    },
+    "Профиль 1": {
+      "commandName": "Project"
+    }
+  }
+}
