@@ -9,9 +9,9 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
     {
         private readonly DataContext db;
 
-        public FootballSubscriptionRepository()
+        public FootballSubscriptionRepository(IGeekConfigManager geekConfigManager)
         {
-            db = new DataContext(ApplicationConfiguration.ConnectionString);
+            db = new DataContext(geekConfigManager.SqLiteConnectionString);
         }
 
         public bool Create(string userName, FootballSubscription model)

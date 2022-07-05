@@ -9,9 +9,9 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
     {
         private readonly DataContext db;
 
-        public UserRepository()
+        public UserRepository(IGeekConfigManager geekConfigManager)
         {
-            db = new DataContext(ApplicationConfiguration.ConnectionString);
+            db = new DataContext(geekConfigManager.SqLiteConnectionString);
         }
 
         public bool Create(User model)

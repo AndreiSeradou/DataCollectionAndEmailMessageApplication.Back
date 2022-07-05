@@ -7,11 +7,18 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
 {
     public class WheatherApiSenderService : IApiSenderService<WheatherSubscription, string>
     {
+        private readonly IGeekConfigManager _geekConfigManager;
+
+        public WheatherApiSenderService(IGeekConfigManager geekConfigManager)
+        {
+            _geekConfigManager = geekConfigManager;
+        }
+
         public string SendOnApi(List<string> values)
         {
             try
             {
-                var webRequest = WebRequest.Create(string.Format(ApplicationConfiguration.RapidApiWhetherUrl, values[0], values[1]));
+                var webRequest = WebRequest.Create(string.Format(ApplicationConfiguration.RapidApiWheatherUrl, values[0], values[1]));
 
                 if (webRequest != null)
                 {
@@ -20,7 +27,7 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
                     webRequest.Method = "GET";
                     webRequest.Timeout = 12000;
                     webRequest.ContentType = "application/json";
-                    webRequest.Headers.Add("X-RapidAPI-Key", ApplicationConfiguration.RapidApiKey);
+                    webRequest.Headers.Add("X-RapidAPI-Key", _geekConfigManager.RapidApiKey);
                     webRequest.Headers.Add("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com");
 
                     using (Stream s = webRequest.GetResponse().GetResponseStream())

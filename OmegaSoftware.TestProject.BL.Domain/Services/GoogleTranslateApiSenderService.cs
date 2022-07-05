@@ -7,6 +7,13 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
 {
     public class GoogleTranslateApiSenderService : IApiSenderService<GoogleTranslateSubscription, string>
     {
+        private readonly IGeekConfigManager _geekConfigManager;
+
+        public GoogleTranslateApiSenderService(IGeekConfigManager geekConfigManager)
+        {
+            _geekConfigManager = geekConfigManager;
+        }
+
         public string SendOnApi(List<string> values)
         {
             try
@@ -21,7 +28,7 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
                     webRequest.Timeout = 12000;
                     webRequest.ContentType = "application/json";
                     webRequest.Headers.Add("Accept-Encoding", "application/gzip");
-                    webRequest.Headers.Add("X-RapidAPI-Key", ApplicationConfiguration.RapidApiKey);
+                    webRequest.Headers.Add("X-RapidAPI-Key", _geekConfigManager.RapidApiKey);
                     webRequest.Headers.Add("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com");
 
                     using (Stream s = webRequest.GetResponse().GetResponseStream())

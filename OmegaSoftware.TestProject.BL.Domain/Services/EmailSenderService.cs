@@ -8,6 +8,13 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
 {
     public class EmailSenderService : IEmailSenderService
     {
+        private readonly IGeekConfigManager _geekConfigManager;
+
+        public EmailSenderService(IGeekConfigManager geekConfigManager)
+        {
+            _geekConfigManager = geekConfigManager;
+        }
+
         public async Task Send(string email, string content)
         {
             try
@@ -15,7 +22,7 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
                 SmtpClient client = new SmtpClient(ApplicationConfiguration.MailSmtp, ApplicationConfiguration.Port);
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.UseDefaultCredentials = false;
-                client.Credentials = new System.Net.NetworkCredential(ApplicationConfiguration.QuartzEmail, ApplicationConfiguration.QuartzPassword);
+                client.Credentials = new System.Net.NetworkCredential(ApplicationConfiguration.QuartzEmail, _geekConfigManager.QuartzPassword);
                 client.EnableSsl = true;
 
                 var mail = new MailMessage(ApplicationConfiguration.QuartzEmail, email);

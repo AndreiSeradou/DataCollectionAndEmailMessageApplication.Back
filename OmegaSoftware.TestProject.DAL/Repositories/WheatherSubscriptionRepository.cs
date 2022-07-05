@@ -9,9 +9,9 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
     {
         private readonly DataContext db;
 
-        public WheatherSubscriptionRepository()
+        public WheatherSubscriptionRepository(IGeekConfigManager geekConfigManager)
         {
-            db = new DataContext(ApplicationConfiguration.ConnectionString);
+            db = new DataContext(geekConfigManager.SqLiteConnectionString);
         }
 
         public ICollection<WheatherSubscription> GetAll(string userName)

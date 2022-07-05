@@ -7,6 +7,13 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
 {
     public class FootballApiSenderService : IApiSenderService<FootballSubscription, string>
     {
+        private readonly IGeekConfigManager _geekConfigManager;
+
+        public FootballApiSenderService(IGeekConfigManager geekConfigManager)
+        {
+            _geekConfigManager = geekConfigManager;
+        }
+
         public string SendOnApi(List<string> values)
         {
             try
@@ -19,7 +26,7 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
 
                     webRequest.Method = "GET";
                     webRequest.Timeout = 12000;
-                    webRequest.Headers.Add("X-RapidAPI-Key", ApplicationConfiguration.RapidApiKey);
+                    webRequest.Headers.Add("X-RapidAPI-Key", _geekConfigManager.RapidApiKey);
                     webRequest.Headers.Add("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com");
 
                     using (Stream s = webRequest.GetResponse().GetResponseStream())
