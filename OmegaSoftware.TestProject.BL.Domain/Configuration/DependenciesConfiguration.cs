@@ -11,13 +11,13 @@ namespace OmegaSoftware.TestProject.BL.Domain.Configuration
     {
         public static IServiceCollection RegisterDomainService(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddScoped<IEmailSenderService, EmailSenderService>();
+            serviceCollection.AddSingleton<IEmailSenderService, EmailSenderService>();
             serviceCollection.AddScoped<IApiSenderService<WheatherSubscription, string>, WheatherApiSenderService>();
             serviceCollection.AddScoped<IApiSenderService<GoogleTranslateSubscription, string>, GoogleTranslateApiSenderService>();
             serviceCollection.AddScoped<IApiSenderService<FootballSubscription, string>, FootballApiSenderService>();
-            serviceCollection.AddScoped<IQuartzJobService<WheatherSubscription>, QuartzWheatherJobService>();
-            serviceCollection.AddScoped<IQuartzJobService<FootballSubscription>, QuartzFootballJobService>();
-            serviceCollection.AddScoped<IQuartzJobService<GoogleTranslateSubscription>, QuartzGoogleTranslateJobService>();
+            serviceCollection.AddSingleton<IQuartzJobService<WheatherSubscription>, QuartzWheatherJobService>();
+            serviceCollection.AddSingleton<IQuartzJobService<FootballSubscription>, QuartzFootballJobService>();
+            serviceCollection.AddSingleton<IQuartzJobService<GoogleTranslateSubscription>, QuartzGoogleTranslateJobService>();
             serviceCollection.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
             return serviceCollection;
