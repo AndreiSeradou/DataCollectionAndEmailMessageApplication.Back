@@ -34,7 +34,7 @@ namespace OmegaSoftware.TestProject.Configuration
         public const string JobMainParam = "Email";
         public const string RapidApiKey = "************************";//in appsettings
         public const string RapidApiGoogleUrl = "https://google-translate1.p.rapidapi.com/language/translate/v2/languages";
-        public const string RapidApiWhetherUrl = "https://weatherapi-com.p.rapidapi.com/future.json?q={0}&dt={1}";
+        public const string RapidApiWheatherUrl = "https://weatherapi-com.p.rapidapi.com/future.json?q={0}&dt={1}";
         public const string RapidApiFootballUrl = "https://api-football-v1.p.rapidapi.com/v3/leagues";
     }
 }

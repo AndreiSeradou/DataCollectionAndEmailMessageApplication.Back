@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.RegisterAppService();
+builder.Services.AddSingleton<IGeekConfigManager, GeekConfigManager>();
 builder.Services.RegisterDomainService();
 builder.Services.RegisterRepository();
 builder.Services.RegisterBLMappingConfig();
