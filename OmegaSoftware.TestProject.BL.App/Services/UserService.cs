@@ -60,5 +60,14 @@ namespace OmegaSoftware.TestProject.BL.App.Services
 
             return result;
         }
+
+        public UserResponce GetByEmail(string userEmail)
+        {
+            var userByEmil = _userRepository.GetByEmail(userEmail);
+
+            var result = _mapper.Map<UserResponce>(userByEmil);
+
+            return result;
+        }
     }
 }

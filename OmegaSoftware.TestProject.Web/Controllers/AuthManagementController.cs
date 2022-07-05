@@ -9,6 +9,7 @@ using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
 using OmegaSoftware.TestProject.Configuration;
 using OmegaSoftware.TestProject.BL.App.DTOs.Request;
 using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
+using System.Security.Cryptography;
 
 namespace OmegaSoftware.TestProject.Web.Controllers
 {
@@ -46,15 +47,20 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                     });
                 }
 
-                var newUser = new UserResponce() { Email = user.Email, Name  = user.Name, Password = user.Password, Role = ApplicationConfiguration.UserRole};
+                var hashPassword = HashPassword(user.Password);
 
-                var isCreated = _userService.CreateUser(newUser);
-
-                if(isCreated)
+                if (hashPassword != string.Empty)
                 {
-                    var jwtToken = await GenerateJwtToken(newUser);
-                    
-                    return Ok(jwtToken);
+                    var newUser = new UserResponce() { Email = user.Email, Name = user.Name, Password = hashPassword, Role = ApplicationConfiguration.UserRole };
+
+                    var isCreated = _userService.CreateUser(newUser);
+
+                    if (isCreated)
+                    {
+                        var jwtToken = await GenerateJwtToken(newUser);
+
+                        return Ok(jwtToken);
+                    }
                 }
 
                 return BadRequest(new AuthResponce()
@@ -77,7 +83,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-                var existingUser = _userService.GetAllUsers().FirstOrDefault(u => u.Email == user.Email );
+                var existingUser = _userService.GetByEmail(user.Email);
 
                 if(existingUser == null) {
                     return BadRequest(new AuthResponce()
@@ -87,9 +93,20 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                     });
                 }
 
-                var jwtToken  = await GenerateJwtToken(existingUser);
+                var verifyResult = VerifyHashedPassword(existingUser.Password, user.Password);
 
-                return Ok(jwtToken);
+                if (verifyResult)
+                {
+                    var jwtToken = await GenerateJwtToken(existingUser);
+
+                    return Ok(jwtToken);
+                }
+
+                return BadRequest(new AuthResponce()
+                {
+                    Errors = new List<string> { ApplicationConfiguration.ErrorLogin },
+                    Success = false,
+                });
             }
 
             return BadRequest(new AuthResponce()
@@ -140,6 +157,64 @@ namespace OmegaSoftware.TestProject.Web.Controllers
             claims.Add(new Claim(ClaimTypes.Role, user.Role));
 
             return Task.FromResult(claims);
+        }
+
+        private static string HashPassword(string password)
+        {
+            byte[] salt;
+            byte[] buffer2;
+            if (password == null)
+            {
+                return string.Empty;
+            }
+            using (Rfc2898DeriveBytes bytes = new Rfc2898DeriveBytes(password, 0x10, 0x3e8))
+            {
+                salt = bytes.Salt;
+                buffer2 = bytes.GetBytes(0x20);
+            }
+            byte[] dst = new byte[0x31];
+            Buffer.BlockCopy(salt, 0, dst, 1, 0x10);
+            Buffer.BlockCopy(buffer2, 0, dst, 0x11, 0x20);
+            return Convert.ToBase64String(dst);
+        }
+
+        private static bool VerifyHashedPassword(string hashedPassword, string password)
+        {
+            byte[] buffer4;
+            if (hashedPassword == null)
+            {
+                return false;
+            }
+            if (password == null)
+            {
+                return false;
+            }
+            byte[] src = Convert.FromBase64String(hashedPassword);
+            if ((src.Length != 0x31) || (src[0] != 0))
+            {
+                return false;
+            }
+            byte[] dst = new byte[0x10];
+            Buffer.BlockCopy(src, 1, dst, 0, 0x10);
+            byte[] buffer3 = new byte[0x20];
+            Buffer.BlockCopy(src, 0x11, buffer3, 0, 0x20);
+            using (Rfc2898DeriveBytes bytes = new Rfc2898DeriveBytes(password, dst, 0x3e8))
+            {
+                buffer4 = bytes.GetBytes(0x20);
+            }
+            return ByteArraysEqual(buffer3, buffer4);
+        }
+
+        private static bool ByteArraysEqual(byte[] b1, byte[] b2)
+        {
+            if (b1 == b2) return true;
+            if (b1 == null || b2 == null) return false;
+            if (b1.Length != b2.Length) return false;
+            for (int i = 0; i < b1.Length; i++)
+            {
+                if (b1[i] != b2[i]) return false;
+            }
+            return true;
         }
     }
 }
