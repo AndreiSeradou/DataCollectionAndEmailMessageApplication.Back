@@ -44,10 +44,11 @@ namespace OmegaSoftware.TestProject.BL.App.Services
         {
             var result = _wheatherSubscriptionRepository.Delete(userName, model.Id);
 
-            var dalModel = _mapper.Map<WheatherSubscription>(model);
-
             if (result)
+            {
+                var dalModel = _mapper.Map<WheatherSubscription>(model);
                 _quartzJobService.DeleteJob(dalModel);
+            }
 
             return result;
         }

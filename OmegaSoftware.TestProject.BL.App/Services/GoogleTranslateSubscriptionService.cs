@@ -43,10 +43,11 @@ namespace OmegaSoftware.TestProject.BL.App.Services
         {
             var result = _googleTranslateSubscriptionRepository.Delete(userName, model.Id);
 
-            var dalModel = _mapper.Map<GoogleTranslateSubscription>(model);
-
             if (result)
+            {
+                var dalModel = _mapper.Map<GoogleTranslateSubscription>(model);
                 _quartzJobService.DeleteJob(dalModel);
+            }
 
             return result;
         }

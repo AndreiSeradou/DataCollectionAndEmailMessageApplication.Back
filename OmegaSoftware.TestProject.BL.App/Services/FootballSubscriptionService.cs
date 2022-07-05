@@ -43,10 +43,11 @@ namespace OmegaSoftware.TestProject.BL.App.Services
         {
             var result = _footballSubscriptionRepository.Delete(userName, model.Id);
 
-            var dalModel = _mapper.Map<FootballSubscription>(model);
-
             if (result)
+            {
+                var dalModel = _mapper.Map<FootballSubscription>(model);
                 _quartzJobService.DeleteJob(dalModel);
+            }
 
             return result;
         }
