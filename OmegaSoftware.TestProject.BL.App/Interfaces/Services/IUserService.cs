@@ -4,10 +4,10 @@ namespace OmegaSoftware.TestProject.BL.App.Interfaces.Services
 {
     public interface IUserService
     {
-        ICollection<UserBLModel> GetAllUsers();
-        bool CreateUser(UserBLModel model);
-        bool UpdateUser(UserBLModel model);
-        bool DeleteUser(UserBLModel model);
+        ICollection<UserDTOs> GetAllUsers();
+        bool CreateUser(UserDTOs model);
+        bool UpdateUser(UserDTOs model);
+        bool DeleteUser(UserDTOs model);
         bool IsExistihgUserByNameAndEmail(string userName, string userEmail);
     }
 }

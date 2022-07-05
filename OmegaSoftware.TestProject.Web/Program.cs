@@ -14,7 +14,6 @@ builder.Services.RegisterAppService();
 builder.Services.RegisterDomainService();
 builder.Services.RegisterRepository();
 builder.Services.RegisterBLMappingConfig();
-builder.Services.RegisterPLMappingConfig();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

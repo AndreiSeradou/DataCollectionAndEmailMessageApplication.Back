@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
-using OmegaSoftware.TestProject.DAL.Models.DTOs;
+using OmegaSoftware.TestProject.DAL.Models;
 
 namespace OmegaSoftware.TestProject.BL.Domain.Mapping
 {
@@ -8,9 +8,10 @@ namespace OmegaSoftware.TestProject.BL.Domain.Mapping
     {
         public MappingBLConfiguration()
         {
-            CreateMap<WheatherSubscriptionBLModel, WheatherSubscription>().ReverseMap();
-            CreateMap<FootballSubscriptionBLModel, FootballSubscription>().ReverseMap();
-            CreateMap<GoogleTranslateSubscriptionBLModel, GoogleTranslateSubscription>().ReverseMap();
+            CreateMap<WheatherSubscriptionDTOs, WheatherSubscription>().ReverseMap();
+            CreateMap<FootballSubscriptionDTOs, FootballSubscription>().ReverseMap();
+            CreateMap<GoogleTranslateSubscriptionDTOs, GoogleTranslateSubscription>().ReverseMap();
+            CreateMap<UserDTOs, User>().ReverseMap();
         }
     }
 }

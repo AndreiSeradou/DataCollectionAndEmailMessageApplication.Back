@@ -2,7 +2,7 @@
 using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
 using OmegaSoftware.TestProject.BL.Domain.Mapping;
 using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
-using OmegaSoftware.TestProject.BL.Domain.Services.DomainService;
+using OmegaSoftware.TestProject.BL.Domain.Services;
 using Quartz;
 using Quartz.Impl;
 
@@ -13,12 +13,12 @@ namespace OmegaSoftware.TestProject.BL.Domain.Configuration
         public static IServiceCollection RegisterDomainService(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IEmailSenderService, EmailSenderService>();
-            serviceCollection.AddScoped<IApiSenderService<WheatherSubscriptionBLModel, string>, WheatherApiSenderService>();
-            serviceCollection.AddScoped<IApiSenderService<GoogleTranslateSubscriptionBLModel, string>, GoogleTranslateApiSenderService>();
-            serviceCollection.AddScoped<IApiSenderService<FootballSubscriptionBLModel, string>, FootballApiSenderService>();
-            serviceCollection.AddScoped<IQuartzJobService<WheatherSubscriptionBLModel>, QuartzWheatherJobService>();
-            serviceCollection.AddScoped<IQuartzJobService<FootballSubscriptionBLModel>, QuartzFootballJobService>();
-            serviceCollection.AddScoped<IQuartzJobService<GoogleTranslateSubscriptionBLModel>, QuartzGoogleTranslateJobService>();
+            serviceCollection.AddScoped<IApiSenderService<WheatherSubscriptionDTOs, string>, WheatherApiSenderService>();
+            serviceCollection.AddScoped<IApiSenderService<GoogleTranslateSubscriptionDTOs, string>, GoogleTranslateApiSenderService>();
+            serviceCollection.AddScoped<IApiSenderService<FootballSubscriptionDTOs, string>, FootballApiSenderService>();
+            serviceCollection.AddScoped<IQuartzJobService<WheatherSubscriptionDTOs>, QuartzWheatherJobService>();
+            serviceCollection.AddScoped<IQuartzJobService<FootballSubscriptionDTOs>, QuartzFootballJobService>();
+            serviceCollection.AddScoped<IQuartzJobService<GoogleTranslateSubscriptionDTOs>, QuartzGoogleTranslateJobService>();
             serviceCollection.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
             return serviceCollection;

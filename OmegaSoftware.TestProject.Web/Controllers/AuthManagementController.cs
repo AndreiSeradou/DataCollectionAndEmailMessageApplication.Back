@@ -1,15 +1,14 @@
 using System.Security.Claims;
 using System.Text;
-using AutoMapper;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OmegaSoftware.TestProject.Web.Configuration;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
-using OmegaSoftware.TestProject.Web.Models.DTOs;
 using OmegaSoftware.TestProject.Configuration;
 using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
+using OmegaSoftware.TestProject.Web.Models;
 
 namespace OmegaSoftware.TestProject.Web.Controllers
 {
@@ -19,17 +18,15 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     {
         private readonly JwtConfig _jwtConfig;
         private readonly IUserService _userService;
-        private readonly IMapper _mapper;
 
-        public AuthManagementController(IOptionsMonitor<JwtConfig> optionsMonitor, IUserService userService, IMapper mapper)
+        public AuthManagementController(IOptionsMonitor<JwtConfig> optionsMonitor, IUserService userService)
         {
             _jwtConfig = optionsMonitor.CurrentValue;
             _userService = userService;
-            _mapper = mapper;
         }
 
         [HttpPost]
-        [Route("Register")]
+        [Route("register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequest user)
         {
             if (ModelState.IsValid)
@@ -49,13 +46,13 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                     });
                 }
 
-                var newUser = new UserPLModel() { Email = user.Email, Name  = user.Name, Password = user.Password, Role = ApplicationConfiguration.UserRole};
-                var userPLModel = _mapper.Map<UserBLModel>(newUser);
-                var isCreated = _userService.CreateUser(userPLModel);
+                var newUser = new UserDTOs() { Email = user.Email, Name  = user.Name, Password = user.Password, Role = ApplicationConfiguration.UserRole};
+
+                var isCreated = _userService.CreateUser(newUser);
 
                 if(isCreated)
                 {
-                    var jwtToken = await GenerateJwtToken( newUser);
+                    var jwtToken = await GenerateJwtToken(newUser);
                     
                     return Ok(jwtToken);
                 }
@@ -75,7 +72,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         }
 
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
         {
             if(ModelState.IsValid)
@@ -90,8 +87,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                     });
                 }
 
-                var userPLModel = _mapper.Map<UserPLModel>(existingUser);
-                var jwtToken  = await GenerateJwtToken(userPLModel);
+                var jwtToken  = await GenerateJwtToken(existingUser);
 
                 return Ok(jwtToken);
             }
@@ -103,7 +99,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
             });
         }
 
-        private async Task<AuthResponce> GenerateJwtToken(UserPLModel user)
+        private async Task<AuthResponce> GenerateJwtToken(UserDTOs user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
@@ -130,7 +126,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         }
 
 
-        private static Task<List<Claim>> GetAllValidClaims(UserPLModel user)
+        private static Task<List<Claim>> GetAllValidClaims(UserDTOs user)
         {
             var claims = new List<Claim>
             {

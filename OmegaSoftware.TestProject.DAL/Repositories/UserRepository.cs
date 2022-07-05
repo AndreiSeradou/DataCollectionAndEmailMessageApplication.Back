@@ -1,27 +1,27 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Data.Linq;
 using OmegaSoftware.TestProject.Configuration;
 using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
-using OmegaSoftware.TestProject.DAL.Models.DTOs;
+using OmegaSoftware.TestProject.DAL.Models;
 
 namespace OmegaSoftware.TestProject.DAL.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        private readonly DataContext db;
+
+        public UserRepository()
+        {
+            db = new DataContext(ApplicationConfiguration.ConnectionString);
+        }
+
         public bool Create(User model)
         {
-            var sqlExpression = $"INSERT INTO User (name,email,password,role) VALUES ('{model.Name}','{model.Email}','{model.Password}','{model.Role}')";
-            int result;
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
+            try
             {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                result = command.ExecuteNonQuery();
+                db.GetTable<User>().InsertOnSubmit(model);
+                db.SubmitChanges();
             }
-
-            if (result < 1)
+            catch
             {
                 return false;
             }
@@ -31,19 +31,14 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(int id)
         {
-            string sqlExpression = $"DELETE  FROM User WHERE id='{id}'";
-            int result;
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
+            try
             {
-                connection.Open();
+                var userToDelete = db.GetTable<User>().FirstOrDefault(u => u.Id == id);
 
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                result = command.ExecuteNonQuery();
+                db.GetTable<User>().DeleteOnSubmit(userToDelete);
+                db.SubmitChanges();
             }
-
-            if (result < 1)
+            catch
             {
                 return false;
             }
@@ -53,91 +48,39 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public ICollection<User> GetAll()
         {
-            List<User> userList = new List<User>();
-            string sqlExpression = "SELECT * FROM User";
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
-            {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            userList.Add(new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4) });
-                        }
-                    }
-                }
-            }
+            var userList = db.GetTable<User>().ToList();
 
             return userList;
         }
 
         public User GetByEmail(string userEmail)
         {
-            User user = default;
-            var sqlExpression = $"SELECT * FROM User WHERE email = {userEmail}";
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
-            {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4) };
-                    }
-                }
-            }
+            var user = db.GetTable<User>().FirstOrDefault(u => u.Email == userEmail);
 
             return user;
         }
 
         public User GetByName(string userName)
         {
-            User user = default;
-            var sqlExpression = $"SELECT * FROM User WHERE name = {userName}";
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
-            {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4) };
-                    }
-                }
-            }
+            var user = db.GetTable<User>().FirstOrDefault(u => u.UserName == userName);
 
             return user;
         }
 
         public bool Update(User model)
         {
-            string sqlExpression = $"UPDATE User SET name = {model.Name}, email = {model.Email}, role = {model.Role}  WHERE name='{model.Name}'";
-            int result;
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
+            try
             {
-                connection.Open();
+                var userToUpdate = db.GetTable<User>().FirstOrDefault(u => u.Id == model.Id);
 
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+                userToUpdate.Name = model.Name;
+                userToUpdate.Role = model.Role;
+                userToUpdate.Password = model.Password;
+                userToUpdate.Email = model.Email;
 
-                result = command.ExecuteNonQuery();
+                db.SubmitChanges();
             }
-
-            if (result < 1)
+            catch
             {
                 return false;
             }

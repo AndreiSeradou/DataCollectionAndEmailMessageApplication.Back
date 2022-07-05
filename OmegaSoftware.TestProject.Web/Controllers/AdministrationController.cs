@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
 using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.Configuration;
-using OmegaSoftware.TestProject.Web.Models.DTOs;
 
 namespace OmegaSoftware.TestProject.Web.Controllers
 {
@@ -15,74 +13,64 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     public class AdministrationController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ISubscriptionService<FootballSubscriptionBLModel> _footballSubscriptionService;
-        private readonly ISubscriptionService<GoogleTranslateSubscriptionBLModel> _googleTranslateSubscriptionService;
-        private readonly ISubscriptionService<WheatherSubscriptionBLModel> _wheatherSubscriptionService;
-        private readonly IMapper _mapper;
+        private readonly ISubscriptionService<FootballSubscriptionDTOs> _footballSubscriptionService;
+        private readonly ISubscriptionService<GoogleTranslateSubscriptionDTOs> _googleTranslateSubscriptionService;
+        private readonly ISubscriptionService<WheatherSubscriptionDTOs> _wheatherSubscriptionService;
 
-        public AdministrationController(IUserService userService, IMapper mapper, ISubscriptionService<GoogleTranslateSubscriptionBLModel> googleTranslateSubscriptionService, ISubscriptionService<WheatherSubscriptionBLModel> wheatherSubscriptionService, ISubscriptionService<FootballSubscriptionBLModel> footballSubscriptionService)
+        public AdministrationController(IUserService userService, ISubscriptionService<GoogleTranslateSubscriptionDTOs> googleTranslateSubscriptionService, ISubscriptionService<WheatherSubscriptionDTOs> wheatherSubscriptionService, ISubscriptionService<FootballSubscriptionDTOs> footballSubscriptionService)
         {
             _userService = userService;
-            _mapper = mapper;
             _googleTranslateSubscriptionService = googleTranslateSubscriptionService;
             _wheatherSubscriptionService = wheatherSubscriptionService;
             _footballSubscriptionService = footballSubscriptionService;
         }
 
         [HttpGet]
-        [Route("GetAllUsers")]
+        [Route("all")]
         public IActionResult GetAllUsers()
         {
             var users = _userService.GetAllUsers();
 
-            var result = _mapper.Map<ICollection<UserPLModel>>(users);
-
-            if (result == null)
+            if (users == null)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(users);
         }
 
         [HttpGet]
-        [Route("GetUserWheatherSubscriptions")]
-        public IActionResult GetUserWheatherSubscriptions([FromQuery] string userName)
+        [Route("weather-subscriptions")]
+        public IActionResult GetUserWheatherSubscriptions([FromHeader] string userName)
         {
             var subscriptions = _wheatherSubscriptionService.GetAllSubscriptions(userName);
 
-            var result = _mapper.Map<ICollection<WheatherSubscriptionPLModel>>(subscriptions);
-
-            if (result == null)
+            if (subscriptions == null)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(subscriptions);
         }
 
         [HttpGet]
-        [Route("GetUserGoogleSubscriptions")]
-        public IActionResult GetUserGoogleSubscriptions([FromQuery] string userName)
+        [Route("google-subscriptions")]
+        public IActionResult GetUserGoogleSubscriptions([FromHeader] string userName)
         {
             var subscriptions = _googleTranslateSubscriptionService.GetAllSubscriptions(userName);
 
-            var result = _mapper.Map<ICollection<GoogleTranslateSubscriptionPLModel>>(subscriptions);
-
-            if (result == null)
+            if (subscriptions == null)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(subscriptions);
         }
 
         [HttpGet]
-        [Route("GetUserFootballSubscriptions")]
-        public IActionResult GetUserFootballSubscriptions([FromQuery] string userName)
+        [Route("football-subscriptions")]
+        public IActionResult GetUserFootballSubscriptions([FromHeader] string userName)
         {
             var subscriptions = _footballSubscriptionService.GetAllSubscriptions(userName);
 
-            var result = _mapper.Map<ICollection<FootballSubscriptionPLModel>>(subscriptions);
-
-            if (result == null)
+            if (subscriptions == null)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(subscriptions);
         }
 
     }

@@ -1,76 +1,43 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Data.Linq;
 using OmegaSoftware.TestProject.Configuration;
 using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
-using OmegaSoftware.TestProject.DAL.Models.DTOs;
+using OmegaSoftware.TestProject.DAL.Models;
 
 namespace OmegaSoftware.TestProject.DAL.Repositories
 {
     public class WheatherSubscriptionRepository : ISubscriptionRepository<WheatherSubscription>
     {
+        private readonly DataContext db;
+
+        public WheatherSubscriptionRepository()
+        {
+            db = new DataContext(ApplicationConfiguration.ConnectionString);
+        }
+
         public ICollection<WheatherSubscription> GetAll(string userName)
         {
-            List<WheatherSubscription> subList = new List<WheatherSubscription>();
-            string sqlExpression = $"SELECT * FROM WheatherSubscription WHERE userName = {userName}";
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
-            {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read()) 
-                        {
-                            subList.Add(new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserName = reader.GetString(7),  City = reader.GetString(4),  Date = reader.GetString(5), LastRunTime = reader.GetDateTime(6) });
-                        }
-                    }
-                }
-            }
+            var subList = db.GetTable<WheatherSubscription>().Where(s => s.UserName == userName).ToList();
 
             return subList;
         }
 
         public WheatherSubscription GetById(string userName, int id)
         {
-            WheatherSubscription wheatherSubscription = default;
-            var sqlExpression = $"SELECT * FROM WheatherSubscription WHERE id = {id} AND userName = {userName}";
+            var sub = db.GetTable<WheatherSubscription>().FirstOrDefault(s => s.Is == id && s.UserName == userName);
 
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
-            {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-                
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        wheatherSubscription = new WheatherSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), UserName = reader.GetString(7), City = reader.GetString(4), Date = reader.GetString(5), LastRunTime = reader.GetDateTime(6) };
-                    }
-                }
-            }
-
-            return wheatherSubscription;
+            return sub;
         }
 
         public bool Create(string userName, WheatherSubscription model)
         {
-            var sqlExpression = $"INSERT INTO WheatherSubscription (name,cronParams,date,description,city,lastruntime,userName) VALUES ('{model.Name}','{model.CronParams}','{model.Date}','{model.Description}','{model.City}',{model.LastRunTime},'{userName}')";
-            int result;
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
+            try
             {
-                connection.Open();
+                model.UserName = userName;
 
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                result = command.ExecuteNonQuery();
+                db.GetTable<WheatherSubscription>().InsertOnSubmit(model);
+                db.SubmitChanges();
             }
-
-            if (result < 1)
+            catch
             {
                 return false;
             }
@@ -80,19 +47,20 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Update(string userName, WheatherSubscription model)
         {
-            string sqlExpression = $"UPDATE WheatherSubscription SET name = {model.Name}, cronParams = {model.CronParams}, date = {model.Date}, description = {model.Description}, city = {model.City}, userName = {model.UserName}, lastruntime = {model.LastRunTime}  WHERE Name='{userName}'";
-            int result;
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
+            try
             {
-                connection.Open();
+                var subToUpdate = db.GetTable<WheatherSubscription>().FirstOrDefault(s => s.Id == model.Id && s.UserName == userName);
 
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+                subToUpdate.Name = model.Name;
+                subToUpdate.Description = model.Description;
+                subToUpdate.LastRunTime = model.LastRunTime;
+                subToUpdate.CronParams = model.CronParams;
+                subToUpdate.City = model.City;
+                subToUpdate.Date = model.Date;
 
-                result = command.ExecuteNonQuery();
+                db.SubmitChanges();
             }
-
-            if (result < 1)
+            catch
             {
                 return false;
             }
@@ -102,19 +70,14 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(string userName ,int id)
         {
-            string sqlExpression = $"DELETE  FROM WheatherSubscription WHERE id='{id}' And userName = '{userName}'";
-            int result;
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
+            try
             {
-                connection.Open();
+                var subToDelete = db.GetTable<WheatherSubscription>().FirstOrDefault(s => s.Id == id && s.UserName == userName);
 
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                result = command.ExecuteNonQuery();
+                db.GetTable<WheatherSubscription>().DeleteOnSubmit(subToDelete);
+                db.SubmitChanges();
             }
-
-            if (result < 1)
+            catch
             {
                 return false;
             }

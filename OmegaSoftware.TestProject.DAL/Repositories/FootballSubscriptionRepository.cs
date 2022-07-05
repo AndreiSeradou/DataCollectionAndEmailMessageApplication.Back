@@ -1,27 +1,29 @@
-﻿using Microsoft.Data.Sqlite;
-using OmegaSoftware.TestProject.Configuration;
+﻿using OmegaSoftware.TestProject.Configuration;
 using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
-using OmegaSoftware.TestProject.DAL.Models.DTOs;
+using OmegaSoftware.TestProject.DAL.Models;
+using System.Data.Linq;
 
 namespace OmegaSoftware.TestProject.DAL.Repositories
 {
     public class FootballSubscriptionRepository : ISubscriptionRepository<FootballSubscription>
     {
+        private readonly DataContext db;
+
+        public FootballSubscriptionRepository()
+        {
+            db = new DataContext(ApplicationConfiguration.ConnectionString);
+        }
+
         public bool Create(string userName, FootballSubscription model)
         {
-            var sqlExpression = $"INSERT INTO FootballSubscription (name,cronParams,description,lastruntime,userName) VALUES ('{model.Name}','{model.CronParams}','{model.Description}',{model.LastRunTime},'{userName}')";
-            int result;
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
+            try
             {
-                connection.Open();
+                model.UserName = userName;
 
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                result = command.ExecuteNonQuery();
+                db.GetTable<FootballSubscription>().InsertOnSubmit(model);
+                db.SubmitChanges();
             }
-
-            if (result < 1)
+            catch
             {
                 return false;
             }
@@ -31,19 +33,14 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(string userName, int id)
         {
-            string sqlExpression = $"DELETE  FROM FootballSubscription WHERE id='{id}' And userName = '{userName}'";
-            int result;
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
+            try
             {
-                connection.Open();
+                var subToDelete = db.GetTable<FootballSubscription>().FirstOrDefault(s => s.Id == id && s.UserName == userName);
 
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                result = command.ExecuteNonQuery();
+                db.GetTable<FootballSubscription>().DeleteOnSubmit(subToDelete);
+                db.SubmitChanges();
             }
-
-            if (result < 1)
+            catch
             {
                 return false;
             }
@@ -53,68 +50,32 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public ICollection<FootballSubscription> GetAll(string userName)
         {
-            List<FootballSubscription> subList = new List<FootballSubscription>();
-            string sqlExpression = $"SELECT * FROM FootballSubscription WHERE userName = {userName}";
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
-            {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                using (SqliteDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            subList.Add(new FootballSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), LastRunTime =  reader.GetDateTime(4), UserName = reader.GetString(5) });
-                        }
-                    }
-                }
-            }
+            var subList = db.GetTable<FootballSubscription>().Where(s => s.UserName == userName).ToList();
 
             return subList;
         }
 
         public FootballSubscription GetById(string userName, int id)
         {
-            FootballSubscription footballSubscription = default;
-            var sqlExpression = $"SELECT * FROM FootballSubscription WHERE id = {id} AND userName = {userName}";
+            var sub = db.GetTable<FootballSubscription>().FirstOrDefault(s => s.Is == id && s.UserName == userName);
 
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
-            {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        footballSubscription = new FootballSubscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronParams = reader.GetString(3), LastRunTime = reader.GetDateTime(4), UserName = reader.GetString(5) };
-                    }
-                }
-            }
-
-            return footballSubscription;
+            return sub;
         }
 
         public bool Update(string userName, FootballSubscription model)
         {
-            string sqlExpression = $"UPDATE FootballSubscription SET name = {model.Name}, cronParams = {model.CronParams}, description = {model.Description}, userName = {model.UserName}, lastruntime = {model.LastRunTime}  WHERE Name='{userName}'";
-            int result;
-
-            using (var connection = new SqliteConnection(ApplicationConfiguration.ConnectionString))
+            try
             {
-                connection.Open();
+                var subToUpdate = db.GetTable<FootballSubscription>().FirstOrDefault(s => s.Id == model.Id && s.UserName == userName);
 
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+                subToUpdate.Name = model.Name;
+                subToUpdate.Description = model.Description;
+                subToUpdate.LastRunTime = model.LastRunTime;
+                subToUpdate.CronParams = model.CronParams;
 
-                result = command.ExecuteNonQuery();
+                db.SubmitChanges();
             }
-
-            if (result < 1)
+            catch
             {
                 return false;
             }

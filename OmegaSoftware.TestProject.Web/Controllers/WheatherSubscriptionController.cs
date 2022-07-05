@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
 using OmegaSoftware.TestProject.Configuration;
 using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
-using OmegaSoftware.TestProject.Web.Models.DTOs;
 
 namespace OmegaSoftware.TestProject.Web.Controllers
 {
@@ -15,44 +13,38 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = ApplicationConfiguration.UserRole)]
     public class WheatherSubscriptionController : ControllerBase
     {
-        private readonly ISubscriptionService<WheatherSubscriptionBLModel> _wheatherSubscriptionService;
-        private readonly IMapper _mapper;
+        private readonly ISubscriptionService<WheatherSubscriptionDTOs> _wheatherSubscriptionService;
 
-        public WheatherSubscriptionController(ISubscriptionService<WheatherSubscriptionBLModel> wheatherSubscriptionService, IMapper mapper)
+        public WheatherSubscriptionController(ISubscriptionService<WheatherSubscriptionDTOs> wheatherSubscriptionService)
         {
             _wheatherSubscriptionService = wheatherSubscriptionService;
-            _mapper = mapper;
         }
 
         [HttpGet]
-        [Route("GetAllWheatherSubscriptions")]
+        [Route("all")]
         public IActionResult GetAllWheatherSubscriptions()
         {
             var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
             var subscriptions = _wheatherSubscriptionService.GetAllSubscriptions(userName);
 
-            var result = _mapper.Map<ICollection<WheatherSubscriptionPLModel>>(subscriptions);
-
-            if (result == null)
+            if (subscriptions == null)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(subscriptions);
         }
 
 
         [HttpPost]
-        [Route("Subscribe")]
-        public IActionResult Subscribe([FromBody] WheatherSubscriptionPLModel model)
+        [Route("subscribe")]
+        public IActionResult Subscribe([FromBody] WheatherSubscriptionDTOs model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
                 var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
-                var blModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
-
-                var result = _wheatherSubscriptionService.SubscribeAsync(userName, userEmail, blModel);
+                var result = _wheatherSubscriptionService.SubscribeAsync(userName, userEmail, model);
 
                 return Ok(result);
             }
@@ -61,17 +53,15 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         }
 
         [HttpPut]
-        [Route("UpdateWheatherSubscription")]
-        public async Task<IActionResult> UpdateWheatherSubscriptionAsync([FromBody] WheatherSubscriptionPLModel model)
+        [Route("update")]
+        public async Task<IActionResult> UpdateWheatherSubscriptionAsync([FromBody] WheatherSubscriptionDTOs model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
                 var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
-                var blModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
-
-                var result = await _wheatherSubscriptionService.UpdateSubscriptionAsync(userName, userEmail, blModel);
+                var result = await _wheatherSubscriptionService.UpdateSubscriptionAsync(userName, userEmail, model);
 
                 if (result == false)
                     return NotFound();
@@ -83,14 +73,13 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         }
 
         [HttpDelete]
-        [Route("Unsubscribe")]
-        public IActionResult Unsubscribe([FromBody] WheatherSubscriptionPLModel model)
+        [Route("unsubscribe")]
+        public IActionResult Unsubscribe([FromBody] WheatherSubscriptionDTOs model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
-                var blModel = _mapper.Map<WheatherSubscriptionBLModel>(model);
-                var result = _wheatherSubscriptionService.Unsubscribe(userName, blModel);
+                var result = _wheatherSubscriptionService.Unsubscribe(userName, model);
 
                 if (result == false)
                     return NotFound();

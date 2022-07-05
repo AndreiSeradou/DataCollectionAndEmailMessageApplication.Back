@@ -1,4 +1,4 @@
-﻿using OmegaSoftware.TestProject.DAL.Models.DTOs;
+﻿using OmegaSoftware.TestProject.DAL.Models;
 
 namespace OmegaSoftware.TestProject.DAL.Interfaces.Repositories
 {

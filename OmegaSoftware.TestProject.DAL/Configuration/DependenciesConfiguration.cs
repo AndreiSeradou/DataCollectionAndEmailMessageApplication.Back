@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
-using OmegaSoftware.TestProject.DAL.Models.DTOs;
+using OmegaSoftware.TestProject.DAL.Models;
 using OmegaSoftware.TestProject.DAL.Repositories;
 
 namespace OmegaSoftware.TestProject.DAL.Configuration
