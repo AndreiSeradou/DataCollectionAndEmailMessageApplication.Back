@@ -15,6 +15,8 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
 
                 if (webRequest != null)
                 {
+                    string responce;
+
                     webRequest.Method = "GET";
                     webRequest.Timeout = 12000;
                     webRequest.ContentType = "application/json";
@@ -25,11 +27,11 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
                     {
                         using (StreamReader sr = new StreamReader(s))
                         {
-                            var responce = sr.ReadToEnd();
-
-                            return responce;
+                            responce = sr.ReadToEnd();
                         }
                     }
+
+                    return responce;
                 }
 
                 return string.Empty;
