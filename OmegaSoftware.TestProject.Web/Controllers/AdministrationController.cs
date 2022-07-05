@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.Configuration;
 
 namespace OmegaSoftware.TestProject.Web.Controllers
@@ -13,11 +13,11 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     public class AdministrationController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ISubscriptionService<FootballSubscriptionDTOs> _footballSubscriptionService;
-        private readonly ISubscriptionService<GoogleTranslateSubscriptionDTOs> _googleTranslateSubscriptionService;
-        private readonly ISubscriptionService<WheatherSubscriptionDTOs> _wheatherSubscriptionService;
+        private readonly ISubscriptionService<FootballSubscriptionResponce> _footballSubscriptionService;
+        private readonly ISubscriptionService<GoogleTranslateSubscriptionResponce> _googleTranslateSubscriptionService;
+        private readonly ISubscriptionService<WheatherSubscriptionResponce> _wheatherSubscriptionService;
 
-        public AdministrationController(IUserService userService, ISubscriptionService<GoogleTranslateSubscriptionDTOs> googleTranslateSubscriptionService, ISubscriptionService<WheatherSubscriptionDTOs> wheatherSubscriptionService, ISubscriptionService<FootballSubscriptionDTOs> footballSubscriptionService)
+        public AdministrationController(IUserService userService, ISubscriptionService<GoogleTranslateSubscriptionResponce> googleTranslateSubscriptionService, ISubscriptionService<WheatherSubscriptionResponce> wheatherSubscriptionService, ISubscriptionService<FootballSubscriptionResponce> footballSubscriptionService)
         {
             _userService = userService;
             _googleTranslateSubscriptionService = googleTranslateSubscriptionService;

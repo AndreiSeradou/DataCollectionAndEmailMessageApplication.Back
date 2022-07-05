@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OmegaSoftware.TestProject.BL.Domain.Models.DTOs
+namespace OmegaSoftware.TestProject.BL.App.DTOs.Request
 {
-    public class WheatherSubscriptionDTOs
+    public class WheatherSubscriptionRequest
     {
         public int Id { get; set; }
         [Required]

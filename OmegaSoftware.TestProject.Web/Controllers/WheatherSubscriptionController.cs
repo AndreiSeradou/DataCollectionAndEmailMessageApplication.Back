@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
 using OmegaSoftware.TestProject.Configuration;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
+using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
+using AutoMapper;
+using OmegaSoftware.TestProject.BL.App.DTOs.Request;
 
 namespace OmegaSoftware.TestProject.Web.Controllers
 {
@@ -13,11 +15,13 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = ApplicationConfiguration.UserRole)]
     public class WheatherSubscriptionController : ControllerBase
     {
-        private readonly ISubscriptionService<WheatherSubscriptionDTOs> _wheatherSubscriptionService;
+        private readonly ISubscriptionService<WheatherSubscriptionResponce> _wheatherSubscriptionService;
+        private readonly IMapper _mapper;
 
-        public WheatherSubscriptionController(ISubscriptionService<WheatherSubscriptionDTOs> wheatherSubscriptionService)
+        public WheatherSubscriptionController(ISubscriptionService<WheatherSubscriptionResponce> wheatherSubscriptionService, IMapper mapper)
         {
             _wheatherSubscriptionService = wheatherSubscriptionService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -37,14 +41,16 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpPost]
         [Route("subscribe")]
-        public IActionResult Subscribe([FromBody] WheatherSubscriptionDTOs model)
+        public IActionResult Subscribe([FromBody] WheatherSubscriptionRequest model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
                 var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
-                var result = _wheatherSubscriptionService.SubscribeAsync(userName, userEmail, model);
+                var mapModel = _mapper.Map<WheatherSubscriptionResponce>(model);
+
+                var result = _wheatherSubscriptionService.SubscribeAsync(userName, userEmail, mapModel);
 
                 return Ok(result);
             }
@@ -54,14 +60,16 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateWheatherSubscriptionAsync([FromBody] WheatherSubscriptionDTOs model)
+        public async Task<IActionResult> UpdateWheatherSubscriptionAsync([FromBody] WheatherSubscriptionRequest model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
                 var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
-                var result = await _wheatherSubscriptionService.UpdateSubscriptionAsync(userName, userEmail, model);
+                var mapModel = _mapper.Map<WheatherSubscriptionResponce>(model);
+
+                var result = await _wheatherSubscriptionService.UpdateSubscriptionAsync(userName, userEmail, mapModel);
 
                 if (result == false)
                     return NotFound();
@@ -74,12 +82,15 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpDelete]
         [Route("unsubscribe")]
-        public IActionResult Unsubscribe([FromBody] WheatherSubscriptionDTOs model)
+        public IActionResult Unsubscribe([FromBody] WheatherSubscriptionRequest model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
-                var result = _wheatherSubscriptionService.Unsubscribe(userName, model);
+
+                var mapModel = _mapper.Map<WheatherSubscriptionResponce>(model);
+
+                var result = _wheatherSubscriptionService.Unsubscribe(userName, mapModel);
 
                 if (result == false)
                     return NotFound();

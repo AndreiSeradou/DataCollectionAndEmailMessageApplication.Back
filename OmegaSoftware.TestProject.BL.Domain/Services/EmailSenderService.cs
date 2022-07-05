@@ -12,7 +12,7 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
         {
             try
             {
-                SmtpClient client = new SmtpClient(ApplicationConfiguration.MailSmtp, 25);
+                SmtpClient client = new SmtpClient(ApplicationConfiguration.MailSmtp, ApplicationConfiguration.Port);
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.UseDefaultCredentials = false;
                 client.Credentials = new System.Net.NetworkCredential(ApplicationConfiguration.QuartzEmail, ApplicationConfiguration.QuartzPassword);

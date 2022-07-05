@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
 using OmegaSoftware.TestProject.DAL.Models;
 
@@ -30,7 +30,7 @@ namespace OmegaSoftware.TestProject.BL.App.Services
             return false;
         }
 
-        public bool CreateUser(UserDTOs model)
+        public bool CreateUser(UserResponce model)
         {
             var dalModel = _mapper.Map<User>(model);
             var result = _userRepository.Create(dalModel);
@@ -38,22 +38,22 @@ namespace OmegaSoftware.TestProject.BL.App.Services
             return result;
         }
 
-        public bool DeleteUser(UserDTOs model)
+        public bool DeleteUser(UserResponce model)
         {
             var result = _userRepository.Delete(model.Id);
 
             return result;
         }
 
-        public ICollection<UserDTOs> GetAllUsers()
+        public ICollection<UserResponce> GetAllUsers()
         {
             var users = _userRepository.GetAll();
-            var result = _mapper.Map<ICollection<UserDTOs>>(users);
+            var result = _mapper.Map<ICollection<UserResponce>>(users);
 
             return result;
         }
 
-        public bool UpdateUser(UserDTOs model)
+        public bool UpdateUser(UserResponce model)
         {
             var dalModel = _mapper.Map<User>(model);
             var result = _userRepository.Update(dalModel);

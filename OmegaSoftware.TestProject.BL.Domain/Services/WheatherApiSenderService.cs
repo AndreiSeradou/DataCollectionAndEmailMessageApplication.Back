@@ -1,11 +1,11 @@
 ﻿using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.Configuration;
+using OmegaSoftware.TestProject.DAL.Models;
 using System.Net;
 
 namespace OmegaSoftware.TestProject.BL.Domain.Services
 {
-    public class WheatherApiSenderService : IApiSenderService<WheatherSubscriptionDTOs, string>
+    public class WheatherApiSenderService : IApiSenderService<WheatherSubscription, string>
     {
         public string SendOnApi(List<string> values)
         {

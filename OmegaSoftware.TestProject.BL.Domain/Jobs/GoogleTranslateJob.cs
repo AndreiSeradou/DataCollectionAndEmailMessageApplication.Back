@@ -1,6 +1,6 @@
 ﻿using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.Configuration;
+using OmegaSoftware.TestProject.DAL.Models;
 using Quartz;
 using System.Text;
 
@@ -9,9 +9,9 @@ namespace OmegaSoftware.TestProject.BL.Domain.Models.Jobs
     public class GoogleTranslateJob : IJob
     {
         private readonly IEmailSenderService _emailSenderService;
-        private readonly IApiSenderService<GoogleTranslateSubscriptionDTOs, string> _apiSenderService;
+        private readonly IApiSenderService<GoogleTranslateSubscription, string> _apiSenderService;
 
-        public GoogleTranslateJob(IEmailSenderService emailSenderService, IApiSenderService<GoogleTranslateSubscriptionDTOs, string> apiSenderService)
+        public GoogleTranslateJob(IEmailSenderService emailSenderService, IApiSenderService<GoogleTranslateSubscription, string> apiSenderService)
         {
             _emailSenderService = emailSenderService;
             _apiSenderService = apiSenderService;

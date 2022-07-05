@@ -7,8 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using OmegaSoftware.TestProject.Web.Configuration;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
 using OmegaSoftware.TestProject.Configuration;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
-using OmegaSoftware.TestProject.Web.Models;
+using OmegaSoftware.TestProject.BL.App.DTOs.Request;
+using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
 
 namespace OmegaSoftware.TestProject.Web.Controllers
 {
@@ -46,7 +46,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                     });
                 }
 
-                var newUser = new UserDTOs() { Email = user.Email, Name  = user.Name, Password = user.Password, Role = ApplicationConfiguration.UserRole};
+                var newUser = new UserResponce() { Email = user.Email, Name  = user.Name, Password = user.Password, Role = ApplicationConfiguration.UserRole};
 
                 var isCreated = _userService.CreateUser(newUser);
 
@@ -99,7 +99,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
             });
         }
 
-        private async Task<AuthResponce> GenerateJwtToken(UserDTOs user)
+        private async Task<AuthResponce> GenerateJwtToken(UserResponce user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
@@ -126,7 +126,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         }
 
 
-        private static Task<List<Claim>> GetAllValidClaims(UserDTOs user)
+        private static Task<List<Claim>> GetAllValidClaims(UserResponce user)
         {
             var claims = new List<Claim>
             {

@@ -1,6 +1,6 @@
 ﻿using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.Configuration;
+using OmegaSoftware.TestProject.DAL.Models;
 using Quartz;
 using System.Text;
 
@@ -9,9 +9,9 @@ namespace OmegaSoftware.TestProject.BL.Domain.Models.Jobs
     public class WheatherJob : IJob
     {
         private readonly IEmailSenderService _emailSenderService;
-        private readonly IApiSenderService<WheatherSubscriptionDTOs, string> _apiSenderService;
+        private readonly IApiSenderService<WheatherSubscription, string> _apiSenderService;
 
-        public WheatherJob(IEmailSenderService emailSenderService, IApiSenderService<WheatherSubscriptionDTOs, string> apiSenderService)
+        public WheatherJob(IEmailSenderService emailSenderService, IApiSenderService<WheatherSubscription, string> apiSenderService)
         {
             _emailSenderService = emailSenderService;
             _apiSenderService = apiSenderService;

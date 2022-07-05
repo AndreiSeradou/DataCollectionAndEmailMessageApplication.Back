@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
+using OmegaSoftware.TestProject.BL.App.Mapping;
 using OmegaSoftware.TestProject.BL.App.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 
 namespace OmegaSoftware.TestProject.BL.App.Configuration
 {
@@ -10,9 +11,18 @@ namespace OmegaSoftware.TestProject.BL.App.Configuration
         public static IServiceCollection RegisterAppService(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IUserService, UserService>();
-            serviceCollection.AddScoped<ISubscriptionService<WheatherSubscriptionDTOs>, WheatherSubscriptionService>();
-            serviceCollection.AddScoped<ISubscriptionService<FootballSubscriptionDTOs>, FootballSubscriptionService>();
-            serviceCollection.AddScoped<ISubscriptionService<GoogleTranslateSubscriptionDTOs>, GoogleTranslateSubscriptionService>();
+            serviceCollection.AddScoped<ISubscriptionService<WheatherSubscriptionResponce>, WheatherSubscriptionService>();
+            serviceCollection.AddScoped<ISubscriptionService<FootballSubscriptionResponce>, FootballSubscriptionService>();
+            serviceCollection.AddScoped<ISubscriptionService<GoogleTranslateSubscriptionResponce>, GoogleTranslateSubscriptionService>();
+
+            return serviceCollection;
+        }
+
+        public static IServiceCollection RegisterBLMappingConfig(this IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddAutoMapper(
+                c => c.AddProfile<MappingBLConfiguration>(),
+                typeof(MappingBLConfiguration));
 
             return serviceCollection;
         }

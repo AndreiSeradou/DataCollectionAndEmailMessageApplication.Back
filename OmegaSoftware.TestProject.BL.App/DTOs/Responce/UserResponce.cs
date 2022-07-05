@@ -1,6 +1,6 @@
-﻿namespace OmegaSoftware.TestProject.BL.Domain.Models.DTOs
+﻿namespace OmegaSoftware.TestProject.BL.App.DTOs.Responce
 {
-    public class UserDTOs
+    public class UserResponce
     {
         public int Id { get; set; }
         public string Name { get; set; }

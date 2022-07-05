@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OmegaSoftware.TestProject.BL.Domain.Models.DTOs
+namespace OmegaSoftware.TestProject.BL.App.DTOs.Request
 {
-    public class FootballSubscriptionDTOs
+    public class FootballSubscriptionRequest
     {
         public int Id { get; set; }
         [Required]

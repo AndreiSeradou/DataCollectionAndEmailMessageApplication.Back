@@ -1,61 +1,63 @@
 ﻿using AutoMapper;
+using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
 using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
 using OmegaSoftware.TestProject.DAL.Models;
 
 namespace OmegaSoftware.TestProject.BL.App.Services
 {
-    public class GoogleTranslateSubscriptionService : ISubscriptionService<GoogleTranslateSubscriptionDTOs>
+    public class GoogleTranslateSubscriptionService : ISubscriptionService<GoogleTranslateSubscriptionResponce>
     {
         private readonly ISubscriptionRepository<GoogleTranslateSubscription> _googleTranslateSubscriptionRepository;
-        private readonly IQuartzJobService<GoogleTranslateSubscriptionDTOs> _quartzJobService;
+        private readonly IQuartzJobService<GoogleTranslateSubscription> _quartzJobService;
         private readonly IMapper _mapper;
 
-        public GoogleTranslateSubscriptionService(ISubscriptionRepository<GoogleTranslateSubscription> googleTranslateSubscriptionRepository, IQuartzJobService<GoogleTranslateSubscriptionDTOs> quartzJobService, IMapper mapper)
+        public GoogleTranslateSubscriptionService(ISubscriptionRepository<GoogleTranslateSubscription> googleTranslateSubscriptionRepository, IQuartzJobService<GoogleTranslateSubscription> quartzJobService, IMapper mapper)
         {
             _googleTranslateSubscriptionRepository = googleTranslateSubscriptionRepository;
             _quartzJobService = quartzJobService;
             _mapper = mapper;
         }
 
-        public ICollection<GoogleTranslateSubscriptionDTOs> GetAllSubscriptions(string userName)
+        public ICollection<GoogleTranslateSubscriptionResponce> GetAllSubscriptions(string userName)
         {
             var subscriptions = _googleTranslateSubscriptionRepository.GetAll(userName);
-            var result = _mapper.Map<ICollection<GoogleTranslateSubscriptionDTOs>>(subscriptions);
+            var result = _mapper.Map<ICollection<GoogleTranslateSubscriptionResponce>>(subscriptions);
 
             return result;
         }
 
-        public async Task<bool> SubscribeAsync(string userName, string email, GoogleTranslateSubscriptionDTOs model)
+        public async Task<bool> SubscribeAsync(string userName, string email, GoogleTranslateSubscriptionResponce model)
         {
             var dalModel = _mapper.Map<GoogleTranslateSubscription>(model);
             var result = _googleTranslateSubscriptionRepository.Create(userName, dalModel);
 
             if (result)
-                await _quartzJobService.CreateJobAsync(email, model);
+                await _quartzJobService.CreateJobAsync(email, dalModel);
 
             return result;
         }
 
-        public bool Unsubscribe(string userName, GoogleTranslateSubscriptionDTOs model)
+        public bool Unsubscribe(string userName, GoogleTranslateSubscriptionResponce model)
         {
             var result = _googleTranslateSubscriptionRepository.Delete(userName, model.Id);
 
+            var dalModel = _mapper.Map<GoogleTranslateSubscription>(model);
+
             if (result)
-                _quartzJobService.DeleteJob(model);
+                _quartzJobService.DeleteJob(dalModel);
 
             return result;
         }
 
-        public async Task<bool> UpdateSubscriptionAsync(string userName, string email, GoogleTranslateSubscriptionDTOs model)
+        public async Task<bool> UpdateSubscriptionAsync(string userName, string email, GoogleTranslateSubscriptionResponce model)
         {
             var dalModel = _mapper.Map<GoogleTranslateSubscription>(model);
             var result = _googleTranslateSubscriptionRepository.Update(userName, dalModel);
 
             if (result)
-                await _quartzJobService.UpdateJobAsync(email, model);
+                await _quartzJobService.UpdateJobAsync(email, dalModel);
 
             return result;
         }

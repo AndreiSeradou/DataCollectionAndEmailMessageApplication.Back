@@ -1,12 +1,12 @@
 ﻿using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.Configuration;
 using OmegaSoftware.TestProject.BL.Domain.Models.Jobs;
+using OmegaSoftware.TestProject.DAL.Models;
 using Quartz;
 
 namespace OmegaSoftware.TestProject.BL.Domain.Services
 {
-    public class QuartzGoogleTranslateJobService : IQuartzJobService<GoogleTranslateSubscriptionDTOs>
+    public class QuartzGoogleTranslateJobService : IQuartzJobService<GoogleTranslateSubscription>
     {
         private readonly ISchedulerFactory _schedulerFactory;
         private IScheduler _scheduler { get; set; }
@@ -16,7 +16,7 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
             _schedulerFactory = schedulerFactory;
         }
 
-        public async Task CreateJobAsync(string email, GoogleTranslateSubscriptionDTOs model)
+        public async Task CreateJobAsync(string email, GoogleTranslateSubscription model)
         {
             _scheduler = await _schedulerFactory.GetScheduler();
 
@@ -31,13 +31,13 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
             await _scheduler.ScheduleJob(jobDetail, trigger);
         }
 
-        public async Task UpdateJobAsync(string email, GoogleTranslateSubscriptionDTOs model)
+        public async Task UpdateJobAsync(string email, GoogleTranslateSubscription model)
         {
             DeleteJob(model);
             await CreateJobAsync(email, model);
         }
 
-        public void DeleteJob(GoogleTranslateSubscriptionDTOs model)
+        public void DeleteJob(GoogleTranslateSubscription model)
         {
             _scheduler.UnscheduleJob(new TriggerKey(model.Id.ToString(), model.UserName));
             _scheduler.DeleteJob(new JobKey(model.Id.ToString(), model.UserName));

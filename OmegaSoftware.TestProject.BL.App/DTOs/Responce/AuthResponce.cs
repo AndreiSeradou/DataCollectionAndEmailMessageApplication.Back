@@ -1,4 +1,4 @@
-﻿namespace OmegaSoftware.TestProject.Web.Models
+﻿namespace OmegaSoftware.TestProject.BL.App.DTOs.Responce
 {
     public class AuthResponce
     {

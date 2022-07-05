@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OmegaSoftware.TestProject.BL.App.DTOs.Request;
+using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -13,11 +15,13 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = ApplicationConfiguration.UserRole)]
     public class FootballSubscriptionController : ControllerBase
     {
-        private readonly ISubscriptionService<FootballSubscriptionDTOs> _footballSubscriptionService;
+        private readonly ISubscriptionService<FootballSubscriptionResponce> _footballSubscriptionService;
+        private readonly IMapper  _mapper;
 
-        public FootballSubscriptionController(ISubscriptionService<FootballSubscriptionDTOs> footballSubscriptionService)
+        public FootballSubscriptionController(ISubscriptionService<FootballSubscriptionResponce> footballSubscriptionService, IMapper mapper)
         {
             _footballSubscriptionService = footballSubscriptionService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -37,14 +41,16 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpPost]
         [Route("subscribe")]
-        public IActionResult Subscribe([FromBody] FootballSubscriptionDTOs model)
+        public IActionResult Subscribe([FromBody] FootballSubscriptionRequest model)
         {
             if (ModelState.IsValid)
             {                
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
                 var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
-                var result = _footballSubscriptionService.SubscribeAsync(userName, userEmail, model);
+                var mapModel = _mapper.Map<FootballSubscriptionResponce>(model);
+
+                var result = _footballSubscriptionService.SubscribeAsync(userName, userEmail, mapModel);
 
                 return Ok(result);
             }
@@ -54,14 +60,16 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateFootballSubscriptionAsync([FromBody] FootballSubscriptionDTOs model)
+        public async Task<IActionResult> UpdateFootballSubscriptionAsync([FromBody] FootballSubscriptionRequest model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
                 var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
-                var result = await _footballSubscriptionService.UpdateSubscriptionAsync(userName, userEmail, model);
+                var mapModel = _mapper.Map<FootballSubscriptionResponce>(model);
+
+                var result = await _footballSubscriptionService.UpdateSubscriptionAsync(userName, userEmail, mapModel);
 
                 if (result == false)
                     return NotFound();
@@ -74,12 +82,15 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpDelete]
         [Route("unsubscribe")]
-        public IActionResult Unsubscribe([FromBody] FootballSubscriptionDTOs model)
+        public IActionResult Unsubscribe([FromBody] FootballSubscriptionRequest model)
         {
             if (ModelState.IsValid)
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
-                var result = _footballSubscriptionService.Unsubscribe(userName, model);
+
+                var mapModel = _mapper.Map<FootballSubscriptionResponce>(model);
+
+                var result = _footballSubscriptionService.Unsubscribe(userName, mapModel);
 
                 if (result == false)
                     return NotFound();

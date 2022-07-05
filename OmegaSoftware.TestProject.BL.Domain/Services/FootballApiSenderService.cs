@@ -1,11 +1,11 @@
 ﻿using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
-using OmegaSoftware.TestProject.BL.Domain.Models.DTOs;
 using OmegaSoftware.TestProject.Configuration;
+using OmegaSoftware.TestProject.DAL.Models;
 using System.Net;
 
 namespace OmegaSoftware.TestProject.BL.Domain.Services
 {
-    public class FootballApiSenderService : IApiSenderService<FootballSubscriptionDTOs, string>
+    public class FootballApiSenderService : IApiSenderService<FootballSubscription, string>
     {
         public string SendOnApi(List<string> values)
         {

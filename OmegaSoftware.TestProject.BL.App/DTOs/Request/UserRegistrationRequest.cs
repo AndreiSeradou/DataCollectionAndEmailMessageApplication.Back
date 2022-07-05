@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OmegaSoftware.TestProject.Web.Models
+namespace OmegaSoftware.TestProject.BL.App.DTOs.Request
 {
-    public class UserLoginRequest
+    public class UserRegistrationRequest
     {
+        [Required]
+        public string Name { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }

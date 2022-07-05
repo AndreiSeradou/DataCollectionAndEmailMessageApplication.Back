@@ -3,10 +3,11 @@ namespace OmegaSoftware.TestProject.Configuration
 {
     public static class ApplicationConfiguration
     {
+        public const int Port = 25;
         public const string CustomClaimId = "Id";
         public const string CustomClaimName = "Name";
         public const string InvalidModel = "Invalid";
-        public const string ConnectionString = "Data Source=subscriptiondata.db";
+        public const string ConnectionString = "Data Source=subscriptiondata.db";//in appsettings
         public const string Expression = "0/10 0/1 * 1/1 * ? *";
         public const string AdminRole = "Admin";
         public const string UserRole = "User";
