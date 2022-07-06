@@ -3,6 +3,14 @@ namespace OmegaSoftware.TestProject.Configuration
 {
     public static class ApplicationConfiguration
     {
+        public const string ContentType = "application/json";
+        public const string AcceptEncodingHeader = "Accept-Encoding";
+        public const string AcceptEncoding = "application/gzip";
+        public const string Metod = "GET";
+        public const string RapidApiKeyHeader = "X-RapidAPI-Key";
+        public const string RapidApiHostHeader = "X-RapidAPI-Host";
+        public const string RapidAPIHost = "weatherapi-com.p.rapidapi.com";
+        public const int Timeout = 12000;
         public const int Port = 25;
         public const string CustomClaimId = "Id";
         public const string CustomClaimName = "Name";

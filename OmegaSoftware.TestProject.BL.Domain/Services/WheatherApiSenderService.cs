@@ -26,11 +26,10 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
                 {
                     string responce;
 
-                    webRequest.Method = "GET";
-                    webRequest.Timeout = 12000;
-                    webRequest.ContentType = "application/json";
-                    webRequest.Headers.Add("X-RapidAPI-Key", _rapidApiConfig.RapidApiKey);
-                    webRequest.Headers.Add("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com");
+                    webRequest.Method = ApplicationConfiguration.Metod;
+                    webRequest.Timeout = ApplicationConfiguration.Timeout;
+                    webRequest.Headers.Add(ApplicationConfiguration.RapidApiKeyHeader, _rapidApiConfig.RapidApiKey);
+                    webRequest.Headers.Add(ApplicationConfiguration.RapidApiHostHeader, ApplicationConfiguration.RapidAPIHost);
 
                     using (Stream s = webRequest.GetResponse().GetResponseStream())
                     {
