@@ -1,4 +1,6 @@
-﻿using OmegaSoftware.TestProject.Configuration;
+﻿using Microsoft.Extensions.Options;
+using OmegaSoftware.TestProject.Configuration;
+using OmegaSoftware.TestProject.DAL.Configuration;
 using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
 using OmegaSoftware.TestProject.DAL.Models;
 using System.Data.Linq;
@@ -8,10 +10,11 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
     public class FootballSubscriptionRepository : ISubscriptionRepository<FootballSubscription>
     {
         private readonly DataContext db;
+        private readonly ConnectionStrings _connectionStrings;
 
-        public FootballSubscriptionRepository(IGeekConfigManager geekConfigManager)
+        public FootballSubscriptionRepository(IOptionsMonitor<ConnectionStrings> optionsMonitor)
         {
-            db = new DataContext(geekConfigManager.SqLiteConnectionString);
+            db = new DataContext(_connectionStrings.SqLiteConnectionString);
         }
 
         public bool Create(string userName, FootballSubscription model)

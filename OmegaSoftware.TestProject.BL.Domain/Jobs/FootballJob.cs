@@ -27,6 +27,7 @@ namespace OmegaSoftware.TestProject.BL.Domain.Models.Jobs
             var apiResult = _apiSenderService.SendOnApi();
 
             await _emailSenderService.Send(email, apiResult);
+
         }
     }
 }

@@ -14,6 +14,9 @@ namespace OmegaSoftware.TestProject.Configuration
         public const string ErrorLogin = "Invalid login request";
         public const string ErrorPayload = "Invalid payload";
         public const string JwtConfig = "JwtConfig";
+        public const string ConnectionStrings = "ConnectionStrings";
+        public const string RapidApiConfig = "RapidApiConfig";
+        public const string EmailConfig = "EmailConfig";
         public const string JwtSecret = "JwtConfig:Secret";
         public const string Cors = "Open";
         public const string Policy = "DepartmentPolicy";

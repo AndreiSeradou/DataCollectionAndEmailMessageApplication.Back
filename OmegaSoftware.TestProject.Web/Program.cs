@@ -11,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.RegisterAppService();
-builder.Services.AddSingleton<IGeekConfigManager, GeekConfigManager>();
 builder.Services.RegisterDomainService();
 builder.Services.RegisterRepository();
 builder.Services.RegisterBLMappingConfig();
@@ -20,6 +19,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(ApplicationConfiguration.JwtConfig));
+builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection(ApplicationConfiguration.EmailConfig));
+builder.Services.Configure<RapidApiConfig>(builder.Configuration.GetSection(ApplicationConfiguration.RapidApiConfig));
+builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection(ApplicationConfiguration.ConnectionStrings));
 var key = Encoding.ASCII.GetBytes(builder.Configuration[ApplicationConfiguration.JwtSecret]);
 
 var tokenValidationParams = new TokenValidationParameters

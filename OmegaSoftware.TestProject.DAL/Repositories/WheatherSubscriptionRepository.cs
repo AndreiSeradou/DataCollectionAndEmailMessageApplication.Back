@@ -1,5 +1,7 @@
 ﻿using System.Data.Linq;
+using Microsoft.Extensions.Options;
 using OmegaSoftware.TestProject.Configuration;
+using OmegaSoftware.TestProject.DAL.Configuration;
 using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
 using OmegaSoftware.TestProject.DAL.Models;
 
@@ -8,10 +10,11 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
     public class WheatherSubscriptionRepository : ISubscriptionRepository<WheatherSubscription>
     {
         private readonly DataContext db;
+        private readonly ConnectionStrings _connectionStrings;
 
-        public WheatherSubscriptionRepository(IGeekConfigManager geekConfigManager)
+        public WheatherSubscriptionRepository(IOptionsMonitor<ConnectionStrings> optionsMonitor)
         {
-            db = new DataContext(geekConfigManager.SqLiteConnectionString);
+            db = new DataContext(_connectionStrings.SqLiteConnectionString);
         }
 
         public ICollection<WheatherSubscription> GetAll(string userName)

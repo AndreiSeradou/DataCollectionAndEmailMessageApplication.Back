@@ -1,5 +1,7 @@
 ﻿using System.Data.Linq;
+using Microsoft.Extensions.Options;
 using OmegaSoftware.TestProject.Configuration;
+using OmegaSoftware.TestProject.DAL.Configuration;
 using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
 using OmegaSoftware.TestProject.DAL.Models;
 
@@ -8,10 +10,11 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly DataContext db;
+        private readonly ConnectionStrings _connectionStrings;
 
-        public UserRepository(IGeekConfigManager geekConfigManager)
+        public UserRepository(IOptionsMonitor<ConnectionStrings> optionsMonitor)
         {
-            db = new DataContext(geekConfigManager.SqLiteConnectionString);
+            db = new DataContext(_connectionStrings.SqLiteConnectionString);
         }
 
         public bool Create(User model)
