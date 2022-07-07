@@ -27,14 +27,21 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         [Route("all")]
         public IActionResult GetAllFootballSubscriptions()
         {
-            var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
+            try
+            {
+                var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
-            var subscriptions = _subscriptionService.GetAllSubscriptions(userName);
+                var subscriptions = _subscriptionService.GetAllSubscriptions(userName);
 
-            if (subscriptions == null)
-                return NotFound();
+                if (subscriptions == null)
+                    return NotFound();
 
-            return Ok(subscriptions);
+                return Ok(subscriptions);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -43,13 +50,20 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         public IActionResult Subscribe([FromBody] SubscriptionRequest model)
         {
             if (ModelState.IsValid)
-            {                
-                var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
-                var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
+            {
+                try
+                {
+                    var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
+                    var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
-                var result = _subscriptionService.SubscribeAsync(userName, userEmail, model);
+                    var result = _subscriptionService.SubscribeAsync(userName, userEmail, model);
 
-                return Ok(result);
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return BadRequest(ApplicationConfiguration.InvalidModel);
@@ -61,15 +75,22 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
-                var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
+                try
+                {
+                    var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
+                    var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
-                var result = await _subscriptionService.UpdateSubscriptionAsync(userName, userEmail, model);
+                    var result = await _subscriptionService.UpdateSubscriptionAsync(userName, userEmail, model);
 
-                if (result == false)
-                    return NotFound();
+                    if (result == false)
+                        return NotFound();
 
-                return Ok(result);
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return BadRequest(ApplicationConfiguration.InvalidModel);
@@ -81,14 +102,21 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
+                try
+                {
+                    var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
-                var result = _subscriptionService.Unsubscribe(userName, model);
+                    var result = _subscriptionService.Unsubscribe(userName, model);
 
-                if (result == false)
-                    return NotFound();
+                    if (result == false)
+                        return NotFound();
 
-                return Ok(result);
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return BadRequest(ApplicationConfiguration.InvalidModel);

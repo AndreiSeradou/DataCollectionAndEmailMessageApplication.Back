@@ -23,12 +23,19 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         [Route("all-users")]
         public IActionResult GetAllUsers()
         {
-            var users = _userService.GetAllUsers();
+            try
+            {
+                var users = _userService.GetAllUsers();
 
-            if (users == null)
-                return NotFound();
+                if (users == null)
+                    return NotFound();
 
-            return Ok(users);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

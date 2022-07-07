@@ -35,35 +35,42 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var existingUserByNameAndEmail = _userService.IsExistihgUserByNameAndEmail(user.Name, user.Email);
-
-                if (existingUserByNameAndEmail)
+                try
                 {
-                    return BadRequest(new AuthResponce()
+                    var existingUserByNameAndEmail = _userService.IsExistihgUserByNameAndEmail(user.Name, user.Email);
+
+                    if (existingUserByNameAndEmail)
                     {
-                        Errors = new List<string>()
+                        return BadRequest(new AuthResponce()
+                        {
+                            Errors = new List<string>()
                         {
                             ApplicationConfiguration.ErrorName,
                             ApplicationConfiguration.ErrorEmail
                         },
-                        Success = false
-                    });
-                }
-
-                var hashPassword = HashPassword(user.Password);
-
-                if (hashPassword != string.Empty)
-                {
-                    var newUser = new UserRequest() { Email = user.Email, Name = user.Name, Password = hashPassword, Role = ApplicationConfiguration.UserRole };
-
-                    var isCreated = _userService.CreateUser(newUser);
-
-                    if (isCreated)
-                    {
-                        var jwtToken = await GenerateJwtToken(newUser);
-
-                        return Ok(jwtToken);
+                            Success = false
+                        });
                     }
+
+                    var hashPassword = HashPassword(user.Password);
+
+                    if (hashPassword != string.Empty)
+                    {
+                        var newUser = new UserRequest() { Email = user.Email, Name = user.Name, Password = hashPassword, Role = ApplicationConfiguration.UserRole };
+
+                        var isCreated = _userService.CreateUser(newUser);
+
+                        if (isCreated)
+                        {
+                            var jwtToken = await GenerateJwtToken(newUser);
+
+                            return Ok(jwtToken);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
                 }
 
                 return BadRequest(new AuthResponce()
@@ -86,25 +93,33 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         {
             if(ModelState.IsValid)
             {
-                var existingUser = _userService.GetByEmail(user.Email);
-
-                if(existingUser == null) {
-                    return BadRequest(new AuthResponce()
-                    {
-                        Errors = new List<string> { ApplicationConfiguration.ErrorLogin },
-                        Success = false,
-                    });
-                }
-
-                var verifyResult = VerifyHashedPassword(existingUser.Password, user.Password);
-
-                if (verifyResult)
+                try
                 {
-                    var userToGenerateJWT = _mapper.Map<UserRequest>(existingUser);
+                    var existingUser = _userService.GetByEmail(user.Email);
 
-                    var jwtToken = await GenerateJwtToken(userToGenerateJWT);
+                    if (existingUser == null)
+                    {
+                        return BadRequest(new AuthResponce()
+                        {
+                            Errors = new List<string> { ApplicationConfiguration.ErrorLogin },
+                            Success = false,
+                        });
+                    }
 
-                    return Ok(jwtToken);
+                    var verifyResult = VerifyHashedPassword(existingUser.Password, user.Password);
+
+                    if (verifyResult)
+                    {
+                        var userToGenerateJWT = _mapper.Map<UserRequest>(existingUser);
+
+                        var jwtToken = await GenerateJwtToken(userToGenerateJWT);
+
+                        return Ok(jwtToken);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
                 }
 
                 return BadRequest(new AuthResponce()

@@ -74,6 +74,8 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseStatusCodePages();
+
 app.UseCors(ApplicationConfiguration.Cors);
 
 app.MapControllers();
