@@ -85,6 +85,32 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
             return subList;
         }
 
+        public ICollection<Subscription> GetAll()
+        {
+            List<Subscription> subList = new List<Subscription>();
+            string sqlExpression = $"SELECT * FROM Subscription";
+
+            using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
+            {
+                connection.Open();
+
+                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                using (SqliteDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            subList.Add(new Subscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronExpression = reader.GetString(3), DateStart = reader.GetDateTime(4), ApiParams = reader.GetString(5), LastRunTime = reader.GetDateTime(6), ApiName = reader.GetString(7), UserName = reader.GetString(8) });
+                        }
+                    }
+                }
+            }
+
+            return subList;
+        }
+
         public Subscription GetById(string userName, int id)
         {
             Subscription subscription = default;

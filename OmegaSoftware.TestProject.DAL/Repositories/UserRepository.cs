@@ -17,7 +17,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Create(User model)
         {
-            var sqlExpression = $"INSERT INTO User (name,email,password,role,numberOfUses) VALUES ('{model.Name}','{model.Email}','{model.Password}','{model.Role}','{model.NumberOfUses}')";
+            var sqlExpression = $"INSERT INTO User (name,email,password,role,numberOfUsesApis,numberOfRinningJobs) VALUES ('{model.Name}','{model.Email}','{model.Password}','{model.Role}','{model.NumberOfUsesApis},'{model.NumberOfRunningJobs}')";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -76,7 +76,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                     {
                         while (reader.Read())
                         {
-                            userList.Add(new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUses = reader.GetInt32(5) });
+                            userList.Add(new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUsesApis = reader.GetInt32(5), NumberOfRunningJobs = reader.GetInt32(6) });
                         }
                     }
                 }
@@ -100,7 +100,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUses = reader.GetInt32(5) };
+                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUsesApis = reader.GetInt32(5), NumberOfRunningJobs = reader.GetInt32(6) };
                     }
                 }
             }
@@ -123,7 +123,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUses = reader.GetInt32(5) };
+                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUsesApis = reader.GetInt32(5), NumberOfRunningJobs = reader.GetInt32(6) };
                     }
                 }
             }
@@ -133,7 +133,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Update(User model)
         {
-            string sqlExpression = $"UPDATE User SET name = {model.Name}, email = {model.Email}, role = {model.Role}, numberOfUses = {model.NumberOfUses}  WHERE name='{model.Name}'";
+            string sqlExpression = $"UPDATE User SET name = {model.Name}, email = {model.Email}, role = {model.Role}, numberOfUsesApis = {model.NumberOfUsesApis}, numberOfRunningJobs = {model.NumberOfRunningJobs}  WHERE name='{model.Name}'";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))

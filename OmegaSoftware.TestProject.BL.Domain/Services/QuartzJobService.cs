@@ -1,6 +1,8 @@
-﻿using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
 using OmegaSoftware.TestProject.BL.Domain.Models.Jobs;
 using OmegaSoftware.TestProject.Configuration;
+using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
 using OmegaSoftware.TestProject.DAL.Models;
 using Quartz;
 
@@ -9,11 +11,15 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
     public class QuartzJobService : IQuartzJobService
     {
         private readonly ISchedulerFactory _schedulerFactory;
+        private readonly IServiceScopeFactory _scopeFactory;
         private IScheduler _scheduler { get; set; }
 
-        public QuartzJobService(ISchedulerFactory schedulerFactory)
+        public QuartzJobService(ISchedulerFactory schedulerFactory, IServiceScopeFactory serviceScopeFactory)
         {
             _schedulerFactory = schedulerFactory;
+            _scopeFactory = serviceScopeFactory;
+
+            StartAllJods();
         }
 
         public async Task CreateJobAsync(string email, Subscription subModel, Api apiModel)
@@ -50,6 +56,26 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
         {
             _scheduler.UnscheduleJob(new TriggerKey(model.Id.ToString(), model.UserName));
             _scheduler.DeleteJob(new JobKey(model.Id.ToString(), model.UserName));
+        }
+
+        private async void StartAllJods()
+        {
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var subscriptionRepository = scope.ServiceProvider.GetRequiredService<ISubscriptionRepository>();
+                var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+                var apiRepository = scope.ServiceProvider.GetRequiredService<IApiRepository>();
+
+                var subscriptions = subscriptionRepository.GetAll();
+
+                foreach (var sub in subscriptions)
+                {
+                    var api = apiRepository.GetByName(sub.ApiName);
+                    var user = userRepository.GetByName(sub.UserName);
+
+                    await CreateJobAsync(user.Email, sub, api);
+                }
+            }
         }
     }
 }

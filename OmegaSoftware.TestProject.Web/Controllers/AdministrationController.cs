@@ -13,13 +13,10 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     public class AdministrationController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ISubscriptionService _subscriptionService;
 
-        public AdministrationController(IUserService userService, ISubscriptionService subscriptionService)
+        public AdministrationController(IUserService userService)
         {
             _userService = userService;
-            _subscriptionService = subscriptionService;
-
         }
 
         [HttpGet]
@@ -32,18 +29,6 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                 return NotFound();
 
             return Ok(users);
-        }
-
-        [HttpGet]
-        [Route("user-subscriptions")]
-        public IActionResult GetUserWheatherSubscriptions([FromHeader] string userName)
-        {
-            var subscriptions = _subscriptionService.GetAllSubscriptions(userName);
-
-            if (subscriptions == null)
-                return NotFound();
-
-            return Ok(subscriptions);
         }
     }
 }

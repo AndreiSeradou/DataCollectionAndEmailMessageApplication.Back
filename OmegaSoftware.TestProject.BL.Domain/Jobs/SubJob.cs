@@ -39,11 +39,15 @@ namespace OmegaSoftware.TestProject.BL.Domain.Models.Jobs
             using (var scope = _scopeFactory.CreateScope())
             {
                 var subscriptionRepository = scope.ServiceProvider.GetRequiredService<ISubscriptionRepository>();
+                var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
                 var sub = subscriptionRepository.GetById(userName, subId);
+                var user = userRepository.GetByName(userName);
 
+                user.NumberOfRunningJobs++;
                 sub.LastRunTime = DateTime.UtcNow;
 
+                userRepository.Update(user);
                 subscriptionRepository.Update(userName, sub);
             }
         }

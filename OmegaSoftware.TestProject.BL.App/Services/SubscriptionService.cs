@@ -10,22 +10,24 @@ namespace OmegaSoftware.TestProject.BL.App.Services
 {
     public class SubscriptionService : ISubscriptionService
     {
-        private readonly ISubscriptionRepository _footballSubscriptionRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IQuartzJobService _quartzJobService;
         private readonly IApiRepository _apiRepository;
         private readonly IMapper _mapper;
 
-        public SubscriptionService(ISubscriptionRepository footballSubscriptionRepository, IQuartzJobService quartzJobService, IMapper mapper, IApiRepository apiRepository)
+        public SubscriptionService(ISubscriptionRepository subscriptionRepository, IQuartzJobService quartzJobService, IMapper mapper, IApiRepository apiRepository, IUserRepository userRepository)
         {
-            _footballSubscriptionRepository = footballSubscriptionRepository;
+            _subscriptionRepository = subscriptionRepository;
             _quartzJobService = quartzJobService;
             _apiRepository = apiRepository;
             _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         public ICollection<SubscriptionResponce> GetAllSubscriptions(string userName)
         {
-            var subscriptions = _footballSubscriptionRepository.GetAll(userName);
+            var subscriptions = _subscriptionRepository.GetAll(userName);
             var result = _mapper.Map<ICollection<SubscriptionResponce>>(subscriptions);
 
             return result;
@@ -34,13 +36,18 @@ namespace OmegaSoftware.TestProject.BL.App.Services
         public async Task<bool> SubscribeAsync(string userName, string email, SubscriptionRequest model)
         {
             var dalModel = _mapper.Map<Subscription>(model);
-            var result = _footballSubscriptionRepository.Create(userName, dalModel);
+            var result = _subscriptionRepository.Create(userName, dalModel);
 
             if (result)
             {
                 var apiModel = _apiRepository.GetByName(model.ApiName);
+                var user = _userRepository.GetByName(userName);
 
                 await _quartzJobService.CreateJobAsync(email, dalModel, apiModel);
+
+                user.NumberOfUsesApis++;
+
+                _userRepository.Update(user);
             }
                
             return result;
@@ -48,7 +55,7 @@ namespace OmegaSoftware.TestProject.BL.App.Services
 
         public bool Unsubscribe(string userName, SubscriptionRequest model)
         {
-            var result = _footballSubscriptionRepository.Delete(userName, model.Id);
+            var result = _subscriptionRepository.Delete(userName, model.Id);
 
             if (result)
             {
@@ -62,7 +69,7 @@ namespace OmegaSoftware.TestProject.BL.App.Services
         public async Task<bool> UpdateSubscriptionAsync(string userName, string email, SubscriptionRequest model)
         {
             var dalModel = _mapper.Map<Subscription>(model);
-            var result = _footballSubscriptionRepository.Update(userName, dalModel);
+            var result = _subscriptionRepository.Update(userName, dalModel);
 
             if (result)
             {
