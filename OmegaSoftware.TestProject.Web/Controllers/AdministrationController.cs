@@ -13,20 +13,17 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     public class AdministrationController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ISubscriptionService<FootballSubscriptionResponce> _footballSubscriptionService;
-        private readonly ISubscriptionService<GoogleTranslateSubscriptionResponce> _googleTranslateSubscriptionService;
-        private readonly ISubscriptionService<WheatherSubscriptionResponce> _wheatherSubscriptionService;
+        private readonly ISubscriptionService _subscriptionService;
 
-        public AdministrationController(IUserService userService, ISubscriptionService<GoogleTranslateSubscriptionResponce> googleTranslateSubscriptionService, ISubscriptionService<WheatherSubscriptionResponce> wheatherSubscriptionService, ISubscriptionService<FootballSubscriptionResponce> footballSubscriptionService)
+        public AdministrationController(IUserService userService, ISubscriptionService subscriptionService)
         {
             _userService = userService;
-            _googleTranslateSubscriptionService = googleTranslateSubscriptionService;
-            _wheatherSubscriptionService = wheatherSubscriptionService;
-            _footballSubscriptionService = footballSubscriptionService;
+            _subscriptionService = subscriptionService;
+
         }
 
         [HttpGet]
-        [Route("all")]
+        [Route("all-users")]
         public IActionResult GetAllUsers()
         {
             var users = _userService.GetAllUsers();
@@ -38,40 +35,15 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         }
 
         [HttpGet]
-        [Route("weather-subscriptions")]
+        [Route("user-subscriptions")]
         public IActionResult GetUserWheatherSubscriptions([FromHeader] string userName)
         {
-            var subscriptions = _wheatherSubscriptionService.GetAllSubscriptions(userName);
+            var subscriptions = _subscriptionService.GetAllSubscriptions(userName);
 
             if (subscriptions == null)
                 return NotFound();
 
             return Ok(subscriptions);
         }
-
-        [HttpGet]
-        [Route("google-subscriptions")]
-        public IActionResult GetUserGoogleSubscriptions([FromHeader] string userName)
-        {
-            var subscriptions = _googleTranslateSubscriptionService.GetAllSubscriptions(userName);
-
-            if (subscriptions == null)
-                return NotFound();
-
-            return Ok(subscriptions);
-        }
-
-        [HttpGet]
-        [Route("football-subscriptions")]
-        public IActionResult GetUserFootballSubscriptions([FromHeader] string userName)
-        {
-            var subscriptions = _footballSubscriptionService.GetAllSubscriptions(userName);
-
-            if (subscriptions == null)
-                return NotFound();
-
-            return Ok(subscriptions);
-        }
-
     }
 }

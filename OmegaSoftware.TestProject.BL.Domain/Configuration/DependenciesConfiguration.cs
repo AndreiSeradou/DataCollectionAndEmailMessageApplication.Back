@@ -12,12 +12,8 @@ namespace OmegaSoftware.TestProject.BL.Domain.Configuration
         public static IServiceCollection RegisterDomainService(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IEmailSenderService, EmailSenderService>();
-            serviceCollection.AddScoped<IApiSenderService<WheatherSubscription, string>, WheatherApiSenderService>();
-            serviceCollection.AddScoped<IApiSenderService<GoogleTranslateSubscription, string>, GoogleTranslateApiSenderService>();
-            serviceCollection.AddScoped<IApiSenderService<FootballSubscription, string>, FootballApiSenderService>();
-            serviceCollection.AddSingleton<IQuartzJobService<WheatherSubscription>, QuartzWheatherJobService>();
-            serviceCollection.AddSingleton<IQuartzJobService<FootballSubscription>, QuartzFootballJobService>();
-            serviceCollection.AddSingleton<IQuartzJobService<GoogleTranslateSubscription>, QuartzGoogleTranslateJobService>();
+            serviceCollection.AddScoped<IApiSenderService, ApiSenderService>();
+            serviceCollection.AddSingleton<IQuartzJobService, QuartzJobService>();
             serviceCollection.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
             return serviceCollection;

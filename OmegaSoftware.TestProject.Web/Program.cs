@@ -20,7 +20,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(ApplicationConfiguration.JwtConfig));
 builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection(ApplicationConfiguration.EmailConfig));
-builder.Services.Configure<RapidApiConfig>(builder.Configuration.GetSection(ApplicationConfiguration.RapidApiConfig));
 builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection(ApplicationConfiguration.ConnectionStrings));
 var key = Encoding.ASCII.GetBytes(builder.Configuration[ApplicationConfiguration.JwtSecret]);
 

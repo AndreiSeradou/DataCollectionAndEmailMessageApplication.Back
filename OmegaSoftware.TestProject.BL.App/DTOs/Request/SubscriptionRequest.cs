@@ -2,7 +2,7 @@
 
 namespace OmegaSoftware.TestProject.BL.App.DTOs.Request
 {
-    public class WheatherSubscriptionRequest
+    public class SubscriptionRequest
     {
         public int Id { get; set; }
         [Required]
@@ -10,12 +10,14 @@ namespace OmegaSoftware.TestProject.BL.App.DTOs.Request
         [Required]
         public string Description { get; set; }
         [Required]
-        public string CronParams { get; set; }
+        public string CronExpression { get; set; }
         [Required]
-        public string City { get; set; }
+        public DateTime DateStart { get; set; }
         [Required]
-        public string Date { get; set; }
+        public string ApiParams { get; set; }
         public DateTime LastRunTime { get; set; }
+        [Required]
+        public string ApiName { get; set; }
         public string UserName { get; set; }
     }
 }

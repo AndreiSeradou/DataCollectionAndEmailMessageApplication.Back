@@ -3,6 +3,7 @@ namespace OmegaSoftware.TestProject.Configuration
 {
     public static class ApplicationConfiguration
     {
+        public const string ConnectionString = "77";
         public const string ContentType = "application/json";
         public const string AcceptEncodingHeader = "Accept-Encoding";
         public const string AcceptEncoding = "application/gzip";
@@ -39,6 +40,14 @@ namespace OmegaSoftware.TestProject.Configuration
         public const string WheatherParam1 = "Citi";
         public const string WheatherParam2 = "Date";
         public const string JobMainParam = "Email";
+        public const string JobIdParam = "Id";
+        public const string JobUrlParam = "Url";
+        public const string JobApiParam = "ApiP";
+        public const string JobKeyHeaderParam = "KeyH";
+        public const string JobKeyParam = "Key";
+        public const string JobHostHeaderParam = "HostH";
+        public const string JobHostParam = "Host";
+        public const string JobNameParam = "Name";
         public const string RapidApiGoogleUrl = "https://google-translate1.p.rapidapi.com/language/translate/v2/languages";
         public const string RapidApiWheatherUrl = "https://weatherapi-com.p.rapidapi.com/future.json?q={0}&dt={1}";
         public const string RapidApiFootballUrl = "https://api-football-v1.p.rapidapi.com/v3/leagues";

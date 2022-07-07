@@ -1,4 +1,5 @@
 ﻿using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
+using OmegaSoftware.TestProject.BL.App.DTOs.Request;
 
 namespace OmegaSoftware.TestProject.BL.App.Interfaces.Services
 {
@@ -6,9 +7,9 @@ namespace OmegaSoftware.TestProject.BL.App.Interfaces.Services
     {
         ICollection<UserResponce> GetAllUsers();
         UserResponce GetByEmail(string userEmail);
-        bool CreateUser(UserResponce model);
-        bool UpdateUser(UserResponce model);
-        bool DeleteUser(UserResponce model);
+        bool CreateUser(UserRequest model);
+        bool UpdateUser(UserRequest model);
+        bool DeleteUser(UserRequest model);
         bool IsExistihgUserByNameAndEmail(string userName, string userEmail);
     }
 }

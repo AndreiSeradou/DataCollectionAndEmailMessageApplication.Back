@@ -4,17 +4,17 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5989",
-      "sslPort": 44307
+      "applicationUrl": "http://localhost:8587",
+      "sslPort": 0
     }
   },
   "profiles": {
-    "DataCollectionAndEmailMessageApplication.Web": {
+    "OmegaSoftware.TestProject.Web": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7023;http://localhost:5023",
+      "applicationUrl": "http://localhost:5035",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

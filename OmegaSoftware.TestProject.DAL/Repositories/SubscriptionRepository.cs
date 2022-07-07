@@ -1,23 +1,23 @@
-﻿using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
-using OmegaSoftware.TestProject.DAL.Models;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Data.Sqlite;
 using OmegaSoftware.TestProject.DAL.Configuration;
+using OmegaSoftware.TestProject.DAL.Interfaces.Repositories;
+using OmegaSoftware.TestProject.DAL.Models;
+using Microsoft.Extensions.Options;
 
 namespace OmegaSoftware.TestProject.DAL.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class SubscriptionRepository : ISubscriptionRepository
     {
-        private readonly ConnectionStrings _connectionStrings;
+        private readonly ConnectionStrings  _connectionStrings;
 
-        public UserRepository(IOptionsMonitor<ConnectionStrings> optionsMonitor)
+        public SubscriptionRepository(IOptionsMonitor<ConnectionStrings> optionsMonitor)
         {
             _connectionStrings = optionsMonitor.CurrentValue;
         }
 
-        public bool Create(User model)
+        public bool Create(string userName, Subscription model)
         {
-            var sqlExpression = $"INSERT INTO User (name,email,password,role,numberOfUses) VALUES ('{model.Name}','{model.Email}','{model.Password}','{model.Role}','{model.NumberOfUses}')";
+            var sqlExpression = $"INSERT INTO Subscription (name,cronExpression,description,apiParams,apiName,DateStart,lastRunTime,userName) VALUES ('{model.Name}','{model.CronExpression}','{model.Description}','{model.ApiParams}','{model.ApiName}','{model.DateStart}','{model.LastRunTime}','{userName}')";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -37,9 +37,9 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
             return true;
         }
 
-        public bool Delete(int id)
+        public bool Delete(string userName, int id)
         {
-            string sqlExpression = $"DELETE  FROM User WHERE id='{id}'";
+            string sqlExpression = $"DELETE  FROM Subscription WHERE id='{id}' AND userName = '{userName}'";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -59,10 +59,10 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
             return true;
         }
 
-        public ICollection<User> GetAll()
+        public ICollection<Subscription> GetAll(string userName)
         {
-            List<User> userList = new List<User>();
-            string sqlExpression = "SELECT * FROM User";
+            List<Subscription> subList = new List<Subscription>();
+            string sqlExpression = $"SELECT * FROM Subscription WHERE userName = {userName}";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -76,19 +76,19 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                     {
                         while (reader.Read())
                         {
-                            userList.Add(new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUses = reader.GetInt32(5) });
+                            subList.Add(new Subscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronExpression = reader.GetString(3), DateStart = reader.GetDateTime(4), ApiParams = reader.GetString(5), LastRunTime = reader.GetDateTime(6), ApiName = reader.GetString(7), UserName = reader.GetString(8) });
                         }
                     }
                 }
             }
 
-            return userList;
+            return subList;
         }
 
-        public User GetByEmail(string userEmail)
+        public Subscription GetById(string userName, int id)
         {
-            User user = default;
-            var sqlExpression = $"SELECT * FROM User WHERE email = {userEmail}";
+            Subscription subscription = default;
+            var sqlExpression = $"SELECT * FROM Subscription WHERE id = {id} AND userName = {userName}";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -100,40 +100,17 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUses = reader.GetInt32(5) };
+                        subscription = new Subscription { Id = reader.GetInt32(0), Name = reader.GetString(1), Description = reader.GetString(2), CronExpression = reader.GetString(3), DateStart = reader.GetDateTime(4), ApiParams = reader.GetString(5), LastRunTime = reader.GetDateTime(6), ApiName = reader.GetString(7), UserName = reader.GetString(8) };
                     }
                 }
             }
 
-            return user;
+            return subscription;
         }
 
-        public User GetByName(string userName)
+        public bool Update(string userName, Subscription model)
         {
-            User user = default;
-            var sqlExpression = $"SELECT * FROM User WHERE name = {userName}";
-
-            using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
-            {
-                connection.Open();
-
-                SqliteCommand command = new SqliteCommand(sqlExpression, connection);
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUses = reader.GetInt32(5) };
-                    }
-                }
-            }
-
-            return user;
-        }
-
-        public bool Update(User model)
-        {
-            string sqlExpression = $"UPDATE User SET name = {model.Name}, email = {model.Email}, role = {model.Role}, numberOfUses = {model.NumberOfUses}  WHERE name='{model.Name}'";
+            string sqlExpression = $"UPDATE Subscription SET name = {model.Name}, cronExpression = {model.CronExpression}, dateStart = {model.DateStart}, apiName = {model.ApiName} ,apiParams = {model.ApiParams}, description = {model.Description}, userName = {model.UserName}, lastRunTime = {model.LastRunTime}  WHERE Name='{userName}'";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))

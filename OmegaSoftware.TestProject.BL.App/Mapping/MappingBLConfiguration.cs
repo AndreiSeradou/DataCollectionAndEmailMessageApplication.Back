@@ -9,13 +9,10 @@ namespace OmegaSoftware.TestProject.BL.App.Mapping
     {
         public MappingBLConfiguration()
         {
-            CreateMap<WheatherSubscriptionRequest, WheatherSubscriptionResponce>().ReverseMap();
-            CreateMap<FootballSubscriptionRequest, FootballSubscriptionResponce>().ReverseMap();
-            CreateMap<GoogleTranslateSubscriptionRequest, GoogleTranslateSubscriptionResponce>().ReverseMap();
+            CreateMap<SubscriptionRequest, SubscriptionResponce>().ReverseMap();
             CreateMap<UserRequest, UserResponce>().ReverseMap();
-            CreateMap<WheatherSubscriptionResponce, WheatherSubscription>().ReverseMap();
-            CreateMap<FootballSubscriptionResponce, FootballSubscription>().ReverseMap();
-            CreateMap<GoogleTranslateSubscriptionResponce, GoogleTranslateSubscription>().ReverseMap();
+            CreateMap<SubscriptionRequest, Subscription>().ReverseMap();
+            CreateMap<SubscriptionResponce, Subscription>().ReverseMap();
             CreateMap<UserResponce, User>().ReverseMap();
         }
     }

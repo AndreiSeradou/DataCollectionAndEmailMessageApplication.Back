@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace OmegaSoftware.TestProject.BL.Domain.Interfaces.Services
 {
-    public interface IApiSenderService<T, K> where T : class where K : class
+    public interface IApiSenderService
     {
-        string SendOnApi(List<K> values = default);
+        string SendOnApi(string url, string apiParams, string apiKeyHeader, string apiKey, string apiHostHeader, string apiHost);
     }
 }
         

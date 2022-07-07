@@ -2,25 +2,17 @@
 using OmegaSoftware.TestProject.BL.Domain.Configuration;
 using OmegaSoftware.TestProject.BL.Domain.Interfaces.Services;
 using OmegaSoftware.TestProject.Configuration;
-using OmegaSoftware.TestProject.DAL.Models;
 using System.Net;
 
 namespace OmegaSoftware.TestProject.BL.Domain.Services
 {
-    public class FootballApiSenderService : IApiSenderService<FootballSubscription, string>
+    public class ApiSenderService : IApiSenderService
     {
-        private readonly RapidApiConfig _rapidApiConfig;
-
-        public FootballApiSenderService(IOptionsMonitor<RapidApiConfig> optionsMonitor)
-        {
-            _rapidApiConfig = optionsMonitor.CurrentValue;
-        }
-
-        public string SendOnApi(List<string> values)
+        public string SendOnApi(string url, string apiParams, string apiKeyHeader, string apiKey, string apiHostHeader, string apiHost)
         {
             try
             {
-                var webRequest = WebRequest.Create(ApplicationConfiguration.RapidApiFootballUrl);
+                var webRequest = WebRequest.Create(url + apiParams);
 
                 if (webRequest != null)
                 {
@@ -28,8 +20,8 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
 
                     webRequest.Method = ApplicationConfiguration.Metod;
                     webRequest.Timeout = ApplicationConfiguration.Timeout;
-                    webRequest.Headers.Add(ApplicationConfiguration.RapidApiKeyHeader, _rapidApiConfig.RapidApiKey);
-                    webRequest.Headers.Add(ApplicationConfiguration.RapidApiHostHeader, ApplicationConfiguration.RapidAPIHost);
+                    webRequest.Headers.Add(apiKeyHeader, apiKey);
+                    webRequest.Headers.Add(apiHostHeader, apiHost);
 
                     using (Stream s = webRequest.GetResponse().GetResponseStream())
                     {

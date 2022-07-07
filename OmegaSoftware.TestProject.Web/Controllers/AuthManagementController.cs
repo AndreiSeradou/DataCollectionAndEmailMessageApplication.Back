@@ -10,20 +10,23 @@ using OmegaSoftware.TestProject.Configuration;
 using OmegaSoftware.TestProject.BL.App.DTOs.Request;
 using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
 using System.Security.Cryptography;
+using AutoMapper;
 
 namespace OmegaSoftware.TestProject.Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthManagementController : ControllerBase
     {
         private readonly JwtConfig _jwtConfig;
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public AuthManagementController(IOptionsMonitor<JwtConfig> optionsMonitor, IUserService userService)
+        public AuthManagementController(IOptionsMonitor<JwtConfig> optionsMonitor, IUserService userService, IMapper mapper)
         {
             _jwtConfig = optionsMonitor.CurrentValue;
             _userService = userService;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -51,7 +54,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
                 if (hashPassword != string.Empty)
                 {
-                    var newUser = new UserResponce() { Email = user.Email, Name = user.Name, Password = hashPassword, Role = ApplicationConfiguration.UserRole };
+                    var newUser = new UserRequest() { Email = user.Email, Name = user.Name, Password = hashPassword, Role = ApplicationConfiguration.UserRole };
 
                     var isCreated = _userService.CreateUser(newUser);
 
@@ -97,7 +100,9 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
                 if (verifyResult)
                 {
-                    var jwtToken = await GenerateJwtToken(existingUser);
+                    var userToGenerateJWT = _mapper.Map<UserRequest>(existingUser);
+
+                    var jwtToken = await GenerateJwtToken(userToGenerateJWT);
 
                     return Ok(jwtToken);
                 }
@@ -116,7 +121,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
             });
         }
 
-        private async Task<AuthResponce> GenerateJwtToken(UserResponce user)
+        private async Task<AuthResponce> GenerateJwtToken(UserRequest user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
@@ -143,7 +148,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         }
 
 
-        private static Task<List<Claim>> GetAllValidClaims(UserResponce user)
+        private static Task<List<Claim>> GetAllValidClaims(UserRequest user)
         {
             var claims = new List<Claim>
             {

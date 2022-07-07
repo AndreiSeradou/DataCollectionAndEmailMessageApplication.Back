@@ -1,10 +1,14 @@
-﻿namespace OmegaSoftware.TestProject.BL.App.Interfaces.Services
+﻿using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
+using OmegaSoftware.TestProject.BL.App.DTOs.Request;
+using OmegaSoftware.TestProject.DAL.Models;
+
+namespace OmegaSoftware.TestProject.BL.App.Interfaces.Services
 {
-    public interface ISubscriptionService<T> where T : class
+    public interface ISubscriptionService
     {
-        ICollection<T> GetAllSubscriptions(string userName);
-        Task<bool> SubscribeAsync(string userName, string email, T model);
-        Task<bool> UpdateSubscriptionAsync(string userName, string email, T model);
-        bool Unsubscribe(string userName, T model);
+        ICollection<SubscriptionResponce> GetAllSubscriptions(string userName);
+        Task<bool> SubscribeAsync(string userName, string email, SubscriptionRequest model);
+        Task<bool> UpdateSubscriptionAsync(string userName, string email, SubscriptionRequest model);
+        bool Unsubscribe(string userName, SubscriptionRequest model);
     }
 }
