@@ -20,7 +20,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         }
 
         [HttpGet]
-        [Route("all-users-and-satistics")]
+        [Route("all-users")]
         public IActionResult GetAllUsers()
         {
             try
