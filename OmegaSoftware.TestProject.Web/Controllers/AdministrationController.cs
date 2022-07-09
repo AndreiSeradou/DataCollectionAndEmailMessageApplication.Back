@@ -13,12 +13,29 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     public class AdministrationController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IApiService _apiService;
 
-        public AdministrationController(IUserService userService, IApiService apiService)
+        public AdministrationController(IUserService userService)
         {
             _userService = userService;
-            _apiService = apiService;
+        }
+
+        [HttpGet]
+        [Route("all-users-and-satistics")]
+        public IActionResult GetAllUsers()
+        {
+            try
+            {
+                var users = _userService.GetAll();
+
+                if (users == null)
+                    return NotFound();
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
