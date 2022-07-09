@@ -11,6 +11,7 @@ namespace OmegaSoftware.TestProject.BL.App.Configuration
         public static IServiceCollection RegisterAppService(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IUserService, UserService>();
+            serviceCollection.AddScoped<IApiService, ApiService>();
             serviceCollection.AddScoped<ISubscriptionService,SubscriptionService>();
 
             return serviceCollection;

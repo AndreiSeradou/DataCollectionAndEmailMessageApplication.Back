@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OmegaSoftware.TestProject.BL.App.DTOs.Responce;
+using OmegaSoftware.TestProject.BL.App.DTOs.Request;
 using OmegaSoftware.TestProject.BL.App.Interfaces.Services;
 using OmegaSoftware.TestProject.Configuration;
 
@@ -13,29 +13,12 @@ namespace OmegaSoftware.TestProject.Web.Controllers
     public class AdministrationController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IApiService _apiService;
 
-        public AdministrationController(IUserService userService)
+        public AdministrationController(IUserService userService, IApiService apiService)
         {
             _userService = userService;
-        }
-
-        [HttpGet]
-        [Route("all-users")]
-        public IActionResult GetAllUsers()
-        {
-            try
-            {
-                var users = _userService.GetAll();
-
-                if (users == null)
-                    return NotFound();
-
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            _apiService = apiService;
         }
     }
 }
