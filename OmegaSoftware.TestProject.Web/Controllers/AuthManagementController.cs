@@ -37,7 +37,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
             {
                 try
                 {
-                    var existingUserByNameAndEmail = _userService.IsExistihgUserByNameAndEmail(user.Name, user.Email);
+                    var existingUserByNameAndEmail = _userService.IsExisting(user.Name, user.Email);
 
                     if (existingUserByNameAndEmail)
                     {
@@ -58,7 +58,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                     {
                         var newUser = new UserRequest() { Email = user.Email, Name = user.Name, Password = hashPassword, Role = ApplicationConfiguration.UserRole };
 
-                        var isCreated = _userService.CreateUser(newUser);
+                        var isCreated = _userService.Create(newUser);
 
                         if (isCreated)
                         {

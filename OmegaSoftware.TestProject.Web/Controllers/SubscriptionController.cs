@@ -31,7 +31,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
             {
                 var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
 
-                var subscriptions = _subscriptionService.GetAllSubscriptions(userName);
+                var subscriptions = _subscriptionService.GetAll(userName);
 
                 if (subscriptions == null)
                     return NotFound();
@@ -80,7 +80,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                     var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
                     var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
 
-                    var result = await _subscriptionService.UpdateSubscriptionAsync(userName, userEmail, model);
+                    var result = await _subscriptionService.UpdateAsync(userName, userEmail, model);
 
                     if (result == false)
                         return NotFound();

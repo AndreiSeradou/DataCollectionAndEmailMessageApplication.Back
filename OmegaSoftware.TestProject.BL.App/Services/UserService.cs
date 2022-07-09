@@ -18,7 +18,7 @@ namespace OmegaSoftware.TestProject.BL.App.Services
             _mapper = mapper;
         }
 
-        public bool IsExistihgUserByNameAndEmail(string userName, string userEmail)
+        public bool IsExisting(string userName, string userEmail)
         {
             var userByName = _userRepository.GetByName(userName);
             var userByEmil = _userRepository.GetByEmail(userEmail);
@@ -31,7 +31,7 @@ namespace OmegaSoftware.TestProject.BL.App.Services
             return false;
         }
 
-        public bool CreateUser(UserRequest model)
+        public bool Create(UserRequest model)
         {
             var dalModel = _mapper.Map<User>(model);
             var result = _userRepository.Create(dalModel);
@@ -39,14 +39,14 @@ namespace OmegaSoftware.TestProject.BL.App.Services
             return result;
         }
 
-        public bool DeleteUser(UserRequest model)
+        public bool Delete(UserRequest model)
         {
             var result = _userRepository.Delete(model.Id);
 
             return result;
         }
 
-        public ICollection<UserResponce> GetAllUsers()
+        public ICollection<UserResponce> GetAll()
         {
             var users = _userRepository.GetAll();
             var result = _mapper.Map<ICollection<UserResponce>>(users);
@@ -54,7 +54,7 @@ namespace OmegaSoftware.TestProject.BL.App.Services
             return result;
         }
 
-        public bool UpdateUser(UserRequest model)
+        public bool Update(UserRequest model)
         {
             var dalModel = _mapper.Map<User>(model);
             var result = _userRepository.Update(dalModel);

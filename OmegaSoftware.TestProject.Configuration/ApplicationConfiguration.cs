@@ -1,9 +1,7 @@
-﻿
-namespace OmegaSoftware.TestProject.Configuration
+﻿namespace OmegaSoftware.TestProject.Configuration
 {
     public static class ApplicationConfiguration
     {
-        public const string ConnectionString = "77";
         public const string ContentType = "application/json";
         public const string AcceptEncodingHeader = "Accept-Encoding";
         public const string AcceptEncoding = "application/gzip";

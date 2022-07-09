@@ -25,7 +25,7 @@ namespace OmegaSoftware.TestProject.BL.App.Services
             _userRepository = userRepository;
         }
 
-        public ICollection<SubscriptionResponce> GetAllSubscriptions(string userName)
+        public ICollection<SubscriptionResponce> GetAll(string userName)
         {
             var subscriptions = _subscriptionRepository.GetAll(userName);
             var result = _mapper.Map<ICollection<SubscriptionResponce>>(subscriptions);
@@ -66,7 +66,7 @@ namespace OmegaSoftware.TestProject.BL.App.Services
             return result;
         }
 
-        public async Task<bool> UpdateSubscriptionAsync(string userName, string email, SubscriptionRequest model)
+        public async Task<bool> UpdateAsync(string userName, string email, SubscriptionRequest model)
         {
             var dalModel = _mapper.Map<Subscription>(model);
             var result = _subscriptionRepository.Update(userName, dalModel);

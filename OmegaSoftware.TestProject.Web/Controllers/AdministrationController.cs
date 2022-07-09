@@ -25,7 +25,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         {
             try
             {
-                var users = _userService.GetAllUsers();
+                var users = _userService.GetAll();
 
                 if (users == null)
                     return NotFound();

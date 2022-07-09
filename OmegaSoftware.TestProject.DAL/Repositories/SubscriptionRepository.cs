@@ -39,7 +39,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(string userName, int id)
         {
-            string sqlExpression = $"DELETE  FROM Subscription WHERE id='{id}' AND userName = '{userName}'";
+            string sqlExpression = $"DELETE  FROM Subscription WHERE id={id} AND userName = {userName}";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))

@@ -6,9 +6,9 @@ namespace OmegaSoftware.TestProject.BL.App.Interfaces.Services
 {
     public interface ISubscriptionService
     {
-        ICollection<SubscriptionResponce> GetAllSubscriptions(string userName);
+        ICollection<SubscriptionResponce> GetAll(string userName);
         Task<bool> SubscribeAsync(string userName, string email, SubscriptionRequest model);
-        Task<bool> UpdateSubscriptionAsync(string userName, string email, SubscriptionRequest model);
+        Task<bool> UpdateAsync(string userName, string email, SubscriptionRequest model);
         bool Unsubscribe(string userName, SubscriptionRequest model);
     }
 }
