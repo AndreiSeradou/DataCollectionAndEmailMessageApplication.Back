@@ -17,7 +17,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Create(User model)
         {
-            var sqlExpression = $"INSERT INTO User (name,email,password,role,numberOfUsesApis,numberOfRinningJobs) VALUES ('{model.Name}','{model.Email}','{model.Password}','{model.Role}','{model.NumberOfUsesApis},'{model.NumberOfRunningJobs}')";
+            var sqlExpression = "INSERT INTO User (name,email,password,role,numberOfUsesApis,numberOfRinningJobs) VALUES (@Name, @Email, @Password, @Role, @NumberOfUsesApis, @NumberOfRunningJobs)";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -25,6 +25,20 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@Name", model.Name);
+                SqliteParameter emailParam = new SqliteParameter("@Email", model.Email);
+                SqliteParameter passwordParam = new SqliteParameter("@Password", model.Password);
+                SqliteParameter roleParam = new SqliteParameter("@Role", model.Role);
+                SqliteParameter numberOfUsesApis = new SqliteParameter("@NumberOfUsesApis", model.NumberOfUsesApis);
+                SqliteParameter numberOfRinningJobs = new SqliteParameter("@NumberOfRinningJobs", model.NumberOfRunningJobs);
+
+                command.Parameters.Add(nameParam);
+                command.Parameters.Add(emailParam);
+                command.Parameters.Add(passwordParam);
+                command.Parameters.Add(roleParam);
+                command.Parameters.Add(numberOfUsesApis);
+                command.Parameters.Add(numberOfRinningJobs);
 
                 result = command.ExecuteNonQuery();
             }
@@ -39,7 +53,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(int id)
         {
-            string sqlExpression = $"DELETE  FROM User WHERE id={id}";
+            string sqlExpression = $"DELETE  FROM User WHERE id = @Id";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -47,6 +61,10 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter idParam = new SqliteParameter("@Id", id);
+
+                command.Parameters.Add(idParam);
 
                 result = command.ExecuteNonQuery();
             }
@@ -88,13 +106,17 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public User GetByEmail(string userEmail)
         {
             User user = default;
-            var sqlExpression = $"SELECT * FROM User WHERE email = {userEmail}";
+            var sqlExpression = $"SELECT * FROM User WHERE email = @Email";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter emailParam = new SqliteParameter("@Email", userEmail);
+
+                command.Parameters.Add(emailParam);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -111,13 +133,17 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public User GetByName(string userName)
         {
             User user = default;
-            var sqlExpression = $"SELECT * FROM User WHERE name = {userName}";
+            var sqlExpression = $"SELECT * FROM User WHERE name = @Name";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@Name", userName);
+
+                command.Parameters.Add(nameParam);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -133,7 +159,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Update(User model)
         {
-            string sqlExpression = $"UPDATE User SET name = {model.Name}, email = {model.Email}, role = {model.Role}, numberOfUsesApis = {model.NumberOfUsesApis}, numberOfRunningJobs = {model.NumberOfRunningJobs}  WHERE name='{model.Name}'";
+            string sqlExpression = $"UPDATE User SET name = @Name, email = @Email, role = @Role, numberOfUsesApis = @NumberOfUsesApis, numberOfRunningJobs = @NumberOfRunningJobs  WHERE name = @Name";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -141,6 +167,20 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@Name", model.Name);
+                SqliteParameter emailParam = new SqliteParameter("@Email", model.Email);
+                SqliteParameter passwordParam = new SqliteParameter("@Password", model.Password);
+                SqliteParameter roleParam = new SqliteParameter("@Role", model.Role);
+                SqliteParameter numberOfUsesApis = new SqliteParameter("@NumberOfUsesApis", model.NumberOfUsesApis);
+                SqliteParameter numberOfRinningJobs = new SqliteParameter("@NumberOfRinningJobs", model.NumberOfRunningJobs);
+
+                command.Parameters.Add(nameParam);
+                command.Parameters.Add(emailParam);
+                command.Parameters.Add(passwordParam);
+                command.Parameters.Add(roleParam);
+                command.Parameters.Add(numberOfUsesApis);
+                command.Parameters.Add(numberOfRinningJobs);
 
                 result = command.ExecuteNonQuery();
             }

@@ -17,7 +17,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Create(Api model)
         {
-            var sqlExpression = $"INSERT INTO Api (name,url,apiKey,apiHost,apiKeyHeader,apiHostHeader) VALUES ('{model.Name}','{model.Url}','{model.ApiKey}','{model.ApiHost}','{model.ApiKeyHeader}','{model.ApiHostHeader}')";
+            var sqlExpression = "INSERT INTO Api (name,url,apiKey,apiHost,apiKeyHeader,apiHostHeader) VALUES (@Name, @Url, @ApiKey, @ApiHost, @ApiKeyHeader, @ApiHostHeader)";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -25,6 +25,20 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@Name", model.Name);
+                SqliteParameter urlParam = new SqliteParameter("@Url", model.Url);
+                SqliteParameter keyParam = new SqliteParameter("@ApiKey", model.ApiKey);
+                SqliteParameter hostParam = new SqliteParameter("@ApiHost", model.ApiHost);
+                SqliteParameter keyHeader = new SqliteParameter("@ApiKeyHeader", model.ApiKeyHeader);
+                SqliteParameter hostHeader = new SqliteParameter("@ApiHostHeader", model.ApiHostHeader);
+
+                command.Parameters.Add(nameParam);
+                command.Parameters.Add(urlParam);
+                command.Parameters.Add(keyParam);
+                command.Parameters.Add(hostParam);
+                command.Parameters.Add(keyHeader);
+                command.Parameters.Add(hostHeader);
 
                 result = command.ExecuteNonQuery();
             }
@@ -39,7 +53,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(int id)
         {
-            string sqlExpression = $"DELETE  FROM Api WHERE id={id}";
+            string sqlExpression = "DELETE  FROM Api WHERE id = @Id";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -47,6 +61,10 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter idParam = new SqliteParameter("@Id", id);
+
+                command.Parameters.Add(idParam);
 
                 result = command.ExecuteNonQuery();
             }
@@ -88,13 +106,17 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public Api GetById(int id)
         {
             Api api = default;
-            var sqlExpression = $"SELECT * FROM Api WHERE id = {id}";
+            var sqlExpression = "SELECT * FROM Api WHERE id = @Id";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter idParam = new SqliteParameter("@Id", id);
+
+                command.Parameters.Add(idParam);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -111,13 +133,17 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public Api GetByName(string apiName)
         {
             Api api = default;
-            var sqlExpression = $"SELECT * FROM Api WHERE apiName = {apiName}";
+            var sqlExpression = "SELECT * FROM Api WHERE apiName = @Name";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@Name", apiName);
+
+                command.Parameters.Add(nameParam);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -133,7 +159,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Update(Api model)
         {
-            string sqlExpression = $"UPDATE Api SET name = {model.Name}, url = {model.Url}, apiKey = {model.ApiKey}, apiHost = {model.ApiHost}, apiKeyHeader = {model.ApiKeyHeader}, apiHostHeader = {model.ApiHostHeader}  WHERE Name='{model.Name}'";
+            string sqlExpression = "UPDATE Api SET name = @Name, url = @Url, apiKey = @ApiKey, apiHost = @ApiHost, apiKeyHeader = @ApiKeyHeader, apiHostHeader = @ApiHostHeader  WHERE Name= @Name";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -141,6 +167,20 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@Name", model.Name);
+                SqliteParameter urlParam = new SqliteParameter("@Url", model.Url);
+                SqliteParameter keyParam = new SqliteParameter("@ApiKey", model.ApiKey);
+                SqliteParameter hostParam = new SqliteParameter("@ApiHost", model.ApiHost);
+                SqliteParameter keyHeader = new SqliteParameter("@ApiKeyHeader", model.ApiKeyHeader);
+                SqliteParameter hostHeader = new SqliteParameter("@ApiHostHeader", model.ApiHostHeader);
+
+                command.Parameters.Add(nameParam);
+                command.Parameters.Add(urlParam);
+                command.Parameters.Add(keyParam);
+                command.Parameters.Add(hostParam);
+                command.Parameters.Add(keyHeader);
+                command.Parameters.Add(hostHeader);
 
                 result = command.ExecuteNonQuery();
             }

@@ -17,7 +17,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Create(string userName, Subscription model)
         {
-            var sqlExpression = $"INSERT INTO Subscription (name,cronExpression,description,apiParams,apiName,DateStart,lastRunTime,userName) VALUES ('{model.Name}','{model.CronExpression}','{model.Description}','{model.ApiParams}','{model.ApiName}','{model.DateStart}','{model.LastRunTime}','{userName}')";
+            var sqlExpression = "INSERT INTO Subscription (name,cronExpression,description,apiParams,apiName,DateStart,lastRunTime,userName) VALUES (@Name,@CronExpression,@Description,@ApiParams,@ApiName,@DateStart,@LastRunTime,@UserName)";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -25,6 +25,24 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@Name", model.Name);
+                SqliteParameter cronParam = new SqliteParameter("@CronExpression", model.CronExpression);
+                SqliteParameter descParam = new SqliteParameter("@Description", model.Description);
+                SqliteParameter apiParam = new SqliteParameter("@ApiParams", model.ApiParams);
+                SqliteParameter apiNameParam = new SqliteParameter("@ApiName", model.ApiName);
+                SqliteParameter dateParam = new SqliteParameter("@DateStart", model.DateStart);
+                SqliteParameter lastRunParam = new SqliteParameter("@LastRunTime", model.LastRunTime);
+                SqliteParameter userNameParam = new SqliteParameter("@UserName", userName);
+
+                command.Parameters.Add(nameParam);
+                command.Parameters.Add(cronParam);
+                command.Parameters.Add(descParam);
+                command.Parameters.Add(apiParam);
+                command.Parameters.Add(apiNameParam);
+                command.Parameters.Add(dateParam);
+                command.Parameters.Add(lastRunParam);
+                command.Parameters.Add(userNameParam);
 
                 result = command.ExecuteNonQuery();
             }
@@ -39,7 +57,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(string userName, int id)
         {
-            string sqlExpression = $"DELETE  FROM Subscription WHERE id={id} AND userName = {userName}";
+            string sqlExpression = "DELETE  FROM Subscription WHERE id = @Id AND userName = @UserName";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -47,6 +65,12 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@UserName", userName);
+                SqliteParameter idParam = new SqliteParameter("@Id", id);
+
+                command.Parameters.Add(nameParam);
+                command.Parameters.Add(idParam);
 
                 result = command.ExecuteNonQuery();
             }
@@ -62,13 +86,17 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public ICollection<Subscription> GetAll(string userName)
         {
             List<Subscription> subList = new List<Subscription>();
-            string sqlExpression = $"SELECT * FROM Subscription WHERE userName = {userName}";
+            string sqlExpression = "SELECT * FROM Subscription WHERE userName = @UserName";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@UserName", userName);
+
+                command.Parameters.Add(nameParam);
 
                 using (SqliteDataReader reader = command.ExecuteReader())
                 {
@@ -114,13 +142,19 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public Subscription GetById(string userName, int id)
         {
             Subscription subscription = default;
-            var sqlExpression = $"SELECT * FROM Subscription WHERE id = {id} AND userName = {userName}";
+            var sqlExpression = "SELECT * FROM Subscription WHERE id = @Id AND userName = @UserName";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@UserName", userName);
+                SqliteParameter idParam = new SqliteParameter("@Id", id);
+
+                command.Parameters.Add(nameParam);
+                command.Parameters.Add(idParam);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -136,7 +170,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Update(string userName, Subscription model)
         {
-            string sqlExpression = $"UPDATE Subscription SET name = {model.Name}, cronExpression = {model.CronExpression}, dateStart = {model.DateStart}, apiName = {model.ApiName} ,apiParams = {model.ApiParams}, description = {model.Description}, userName = {model.UserName}, lastRunTime = {model.LastRunTime}  WHERE Name='{userName}'";
+            string sqlExpression = $"UPDATE Subscription SET name = @Name, cronExpression = @CronExpression, dateStart = @DateStart, apiName = @ApiName, apiParams = @ApiParams, description = @Description, userName = @UserName, lastRunTime = @LastRunTime  WHERE Name = @UserName";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -144,6 +178,24 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 connection.Open();
 
                 SqliteCommand command = new SqliteCommand(sqlExpression, connection);
+
+                SqliteParameter nameParam = new SqliteParameter("@Name", model.Name);
+                SqliteParameter cronParam = new SqliteParameter("@CronExpression", model.CronExpression);
+                SqliteParameter descParam = new SqliteParameter("@Description", model.Description);
+                SqliteParameter apiParam = new SqliteParameter("@ApiParams", model.ApiParams);
+                SqliteParameter apiNameParam = new SqliteParameter("@ApiName", model.ApiName);
+                SqliteParameter dateParam = new SqliteParameter("@DateStart", model.DateStart);
+                SqliteParameter lastRunParam = new SqliteParameter("@LastRunTime", model.LastRunTime);
+                SqliteParameter userNameParam = new SqliteParameter("@UserName", userName);
+
+                command.Parameters.Add(nameParam);
+                command.Parameters.Add(cronParam);
+                command.Parameters.Add(descParam);
+                command.Parameters.Add(apiParam);
+                command.Parameters.Add(apiNameParam);
+                command.Parameters.Add(dateParam);
+                command.Parameters.Add(lastRunParam);
+                command.Parameters.Add(userNameParam);
 
                 result = command.ExecuteNonQuery();
             }
