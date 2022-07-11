@@ -17,7 +17,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Create(User model)
         {
-            var sqlExpression = "INSERT INTO User (name,email,password,role,numberOfUsesApis,numberOfRinningJobs) VALUES (@Name, @Email, @Password, @Role, @NumberOfUsesApis, @NumberOfRunningJobs)";
+            var sqlExpression = "INSERT INTO Users (name,email,password,role,numberOfUsesApis,numberOfRunningJobs) VALUES (@Name, @Email, @Password, @Role, @NumberOfUsesApis, @NumberOfRunningJobs)";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -31,14 +31,14 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 SqliteParameter passwordParam = new SqliteParameter("@Password", model.Password);
                 SqliteParameter roleParam = new SqliteParameter("@Role", model.Role);
                 SqliteParameter numberOfUsesApis = new SqliteParameter("@NumberOfUsesApis", model.NumberOfUsesApis);
-                SqliteParameter numberOfRinningJobs = new SqliteParameter("@NumberOfRinningJobs", model.NumberOfRunningJobs);
+                SqliteParameter numberOfRunningJobs = new SqliteParameter("@NumberOfRunningJobs", model.NumberOfRunningJobs);
 
                 command.Parameters.Add(nameParam);
                 command.Parameters.Add(emailParam);
                 command.Parameters.Add(passwordParam);
                 command.Parameters.Add(roleParam);
                 command.Parameters.Add(numberOfUsesApis);
-                command.Parameters.Add(numberOfRinningJobs);
+                command.Parameters.Add(numberOfRunningJobs);
 
                 result = command.ExecuteNonQuery();
             }
@@ -53,7 +53,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(int id)
         {
-            string sqlExpression = $"DELETE  FROM User WHERE id = @Id";
+            string sqlExpression = $"DELETE  FROM Users WHERE id = @Id";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -80,7 +80,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public ICollection<User> GetAll()
         {
             List<User> userList = new List<User>();
-            string sqlExpression = "SELECT * FROM User";
+            string sqlExpression = "SELECT * FROM Users";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -94,7 +94,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                     {
                         while (reader.Read())
                         {
-                            userList.Add(new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUsesApis = reader.GetInt32(5), NumberOfRunningJobs = reader.GetInt32(6) });
+                            userList.Add(new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Password = reader.GetString(3), Role = reader.GetString(4), NumberOfUsesApis = reader.GetInt32(5), NumberOfRunningJobs = reader.GetInt32(6) });
                         }
                     }
                 }
@@ -106,7 +106,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public User GetByEmail(string userEmail)
         {
             User user = default;
-            var sqlExpression = $"SELECT * FROM User WHERE email = @Email";
+            var sqlExpression = $"SELECT * FROM Users WHERE email = @Email";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -122,7 +122,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUsesApis = reader.GetInt32(5), NumberOfRunningJobs = reader.GetInt32(6) };
+                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Password = reader.GetString(3), Role = reader.GetString(4), NumberOfUsesApis = reader.GetInt32(5), NumberOfRunningJobs = reader.GetInt32(6) };
                     }
                 }
             }
@@ -133,7 +133,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public User GetByName(string userName)
         {
             User user = default;
-            var sqlExpression = $"SELECT * FROM User WHERE name = @Name";
+            var sqlExpression = $"SELECT * FROM Users WHERE name = @Name";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -149,7 +149,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 {
                     while (reader.Read())
                     {
-                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Role = reader.GetString(4), NumberOfUsesApis = reader.GetInt32(5), NumberOfRunningJobs = reader.GetInt32(6) };
+                        user = new User { Id = reader.GetInt32(0), Name = reader.GetString(1), Email = reader.GetString(2), Password = reader.GetString(3), Role = reader.GetString(4), NumberOfUsesApis = reader.GetInt32(5), NumberOfRunningJobs = reader.GetInt32(6) };
                     }
                 }
             }
@@ -159,7 +159,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Update(User model)
         {
-            string sqlExpression = $"UPDATE User SET name = @Name, email = @Email, role = @Role, numberOfUsesApis = @NumberOfUsesApis, numberOfRunningJobs = @NumberOfRunningJobs  WHERE name = @Name";
+            string sqlExpression = $"UPDATE Users SET name = @Name, email = @Email, role = @Role, numberOfUsesApis = @NumberOfUsesApis, numberOfRunningJobs = @NumberOfRunningJobs  WHERE name = @Name";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -173,14 +173,14 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
                 SqliteParameter passwordParam = new SqliteParameter("@Password", model.Password);
                 SqliteParameter roleParam = new SqliteParameter("@Role", model.Role);
                 SqliteParameter numberOfUsesApis = new SqliteParameter("@NumberOfUsesApis", model.NumberOfUsesApis);
-                SqliteParameter numberOfRinningJobs = new SqliteParameter("@NumberOfRinningJobs", model.NumberOfRunningJobs);
+                SqliteParameter numberOfRunningJobs = new SqliteParameter("@NumberOfRunningJobs", model.NumberOfRunningJobs);
 
                 command.Parameters.Add(nameParam);
                 command.Parameters.Add(emailParam);
                 command.Parameters.Add(passwordParam);
                 command.Parameters.Add(roleParam);
                 command.Parameters.Add(numberOfUsesApis);
-                command.Parameters.Add(numberOfRinningJobs);
+                command.Parameters.Add(numberOfRunningJobs);
 
                 result = command.ExecuteNonQuery();
             }

@@ -17,4 +17,10 @@
     <ProjectReference Include="..\OmegaSoftware.TestProject.Configuration\OmegaSoftware.TestProject.Configuration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="subscriptionsdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -56,7 +56,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
                     if (hashPassword != string.Empty)
                     {
-                        var newUser = new UserRequest() { Email = user.Email, Name = user.Name, Password = hashPassword, Role = ApplicationConfiguration.UserRole };
+                        var newUser = new UserRequest() { Email = user.Email, Name = user.Name, Password = hashPassword, Role = ApplicationConfiguration.AdminRole };
 
                         var isCreated = _userService.Create(newUser);
 

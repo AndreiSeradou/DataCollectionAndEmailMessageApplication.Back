@@ -35,6 +35,7 @@ var tokenValidationParams = new TokenValidationParameters
 };
 
 builder.Services.AddSingleton(tokenValidationParams);
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -57,6 +58,8 @@ builder.Services.AddAuthorization(options =>
         policy => policy.RequireClaim(ApplicationConfiguration.PolicyClaim));
 });
 
+builder.Services.AddControllers();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -68,16 +71,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.UseHttpsRedirection();
-
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseStatusCodePages();
-
 app.UseCors(ApplicationConfiguration.Cors);
 
-app.MapControllers();
+app.UseStatusCodePages();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();

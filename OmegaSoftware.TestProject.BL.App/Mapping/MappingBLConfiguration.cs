@@ -11,6 +11,7 @@ namespace OmegaSoftware.TestProject.BL.App.Mapping
         {
             CreateMap<SubscriptionRequest, SubscriptionResponce>().ReverseMap();
             CreateMap<UserRequest, UserResponce>().ReverseMap();
+            CreateMap<UserRequest, User>().ReverseMap();
             CreateMap<SubscriptionRequest, Subscription>().ReverseMap();
             CreateMap<SubscriptionResponce, Subscription>().ReverseMap();
             CreateMap<UserResponce, User>().ReverseMap();

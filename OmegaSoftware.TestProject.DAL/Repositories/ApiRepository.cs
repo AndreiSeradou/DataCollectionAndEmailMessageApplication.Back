@@ -17,7 +17,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Create(Api model)
         {
-            var sqlExpression = "INSERT INTO Api (name,url,apiKey,apiHost,apiKeyHeader,apiHostHeader) VALUES (@Name, @Url, @ApiKey, @ApiHost, @ApiKeyHeader, @ApiHostHeader)";
+            var sqlExpression = "INSERT INTO Apis (name,url,apiKey,apiHost,apiKeyHeader,apiHostHeader) VALUES (@Name, @Url, @ApiKey, @ApiHost, @ApiKeyHeader, @ApiHostHeader)";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -53,7 +53,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(int id)
         {
-            string sqlExpression = "DELETE  FROM Api WHERE id = @Id";
+            string sqlExpression = "DELETE  FROM Apis WHERE id = @Id";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -80,7 +80,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public ICollection<Api> GetAll()
         {
             List<Api> apiList = new List<Api>();
-            string sqlExpression = $"SELECT * FROM Api";
+            string sqlExpression = $"SELECT * FROM Apis";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -106,7 +106,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public Api GetById(int id)
         {
             Api api = default;
-            var sqlExpression = "SELECT * FROM Api WHERE id = @Id";
+            var sqlExpression = "SELECT * FROM Apis WHERE id = @Id";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -133,7 +133,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public Api GetByName(string apiName)
         {
             Api api = default;
-            var sqlExpression = "SELECT * FROM Api WHERE apiName = @Name";
+            var sqlExpression = "SELECT * FROM Apis WHERE apiName = @Name";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -159,7 +159,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Update(Api model)
         {
-            string sqlExpression = "UPDATE Api SET name = @Name, url = @Url, apiKey = @ApiKey, apiHost = @ApiHost, apiKeyHeader = @ApiKeyHeader, apiHostHeader = @ApiHostHeader  WHERE Name= @Name";
+            string sqlExpression = "UPDATE Apis SET name = @Name, url = @Url, apiKey = @ApiKey, apiHost = @ApiHost, apiKeyHeader = @ApiKeyHeader, apiHostHeader = @ApiHostHeader  WHERE Name= @Name";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
