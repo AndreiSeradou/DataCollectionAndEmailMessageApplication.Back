@@ -98,7 +98,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpDelete]
         [Route("unsubscribe")]
-        public IActionResult Unsubscribe([FromBody] SubscriptionRequest model)
+        public IActionResult Unsubscribe([FromHeader] SubscriptionRequest model)
         {
             if (ModelState.IsValid)
             {

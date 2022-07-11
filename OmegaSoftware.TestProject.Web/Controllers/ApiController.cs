@@ -83,7 +83,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpDelete]
         [Route("delete")]
-        public IActionResult DeleteApi([FromBody] ApiRequest model)
+        public IActionResult DeleteApi([FromHeader] ApiRequest model)
         {
             if (ModelState.IsValid)
             {
