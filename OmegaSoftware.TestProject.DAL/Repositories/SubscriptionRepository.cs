@@ -17,7 +17,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Create(string userName, Subscription model)
         {
-            var sqlExpression = "INSERT INTO Subscription (name,cronExpression,description,apiParams,apiName,DateStart,lastRunTime,userName) VALUES (@Name,@CronExpression,@Description,@ApiParams,@ApiName,@DateStart,@LastRunTime,@UserName)";
+            var sqlExpression = "INSERT INTO Subscriptions (name,cronExpression,description,apiParams,apiName,DateStart,lastRunTime,userName) VALUES (@Name,@CronExpression,@Description,@ApiParams,@ApiName,@DateStart,@LastRunTime,@UserName)";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -57,7 +57,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Delete(string userName, int id)
         {
-            string sqlExpression = "DELETE  FROM Subscription WHERE id = @Id AND userName = @UserName";
+            string sqlExpression = "DELETE  FROM Subscriptions WHERE id = @Id AND userName = @UserName";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
@@ -86,7 +86,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public ICollection<Subscription> GetAll(string userName)
         {
             List<Subscription> subList = new List<Subscription>();
-            string sqlExpression = "SELECT * FROM Subscription WHERE userName = @UserName";
+            string sqlExpression = "SELECT * FROM Subscriptions WHERE userName = @UserName";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -116,7 +116,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public ICollection<Subscription> GetAll()
         {
             List<Subscription> subList = new List<Subscription>();
-            string sqlExpression = $"SELECT * FROM Subscription";
+            string sqlExpression = $"SELECT * FROM Subscriptions";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -142,7 +142,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public Subscription GetById(string userName, int id)
         {
             Subscription subscription = default;
-            var sqlExpression = "SELECT * FROM Subscription WHERE id = @Id AND userName = @UserName";
+            var sqlExpression = "SELECT * FROM Subscriptions WHERE id = @Id AND userName = @UserName";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
@@ -170,7 +170,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
 
         public bool Update(string userName, Subscription model)
         {
-            string sqlExpression = $"UPDATE Subscription SET name = @Name, cronExpression = @CronExpression, dateStart = @DateStart, apiName = @ApiName, apiParams = @ApiParams, description = @Description, userName = @UserName, lastRunTime = @LastRunTime  WHERE Name = @UserName";
+            string sqlExpression = $"UPDATE Subscriptions SET name = @Name, cronExpression = @CronExpression, dateStart = @DateStart, apiName = @ApiName, apiParams = @ApiParams, description = @Description, userName = @UserName, lastRunTime = @LastRunTime  WHERE Name = @UserName";
             int result;
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))

@@ -11,7 +11,7 @@
         public const string RapidAPIHost = "weatherapi-com.p.rapidapi.com";
         public const int Timeout = 12000;
         public const int Port = 25;
-        public const string CustomClaimId = "Id";
+        public const string CustomClaimEmail = "Email";
         public const string CustomClaimName = "Name";
         public const string InvalidModel = "Invalid";
         public const string AdminRole = "Admin";

@@ -26,7 +26,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         {
             try
             {
-                var apis = _apiService.GetAll().Select(x => x.Name).ToList();
+                var apis = _apiService.GetAll().Select(x => x.Name);
 
                 if (apis == null)
                     return NotFound();

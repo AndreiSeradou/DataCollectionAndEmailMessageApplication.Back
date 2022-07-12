@@ -11,9 +11,7 @@ namespace OmegaSoftware.TestProject.BL.App.DTOs.Request
         public string Description { get; set; }
         [Required]
         public string CronExpression { get; set; }
-        [Required]
         public DateTime DateStart { get; set; }
-        [Required]
         public string ApiParams { get; set; }
         public DateTime LastRunTime { get; set; }
         [Required]

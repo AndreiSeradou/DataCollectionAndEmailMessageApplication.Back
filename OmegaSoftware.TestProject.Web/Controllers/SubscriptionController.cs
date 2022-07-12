@@ -25,7 +25,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpGet]
         [Route("all")]
-        public IActionResult GetAllFootballSubscriptions()
+        public IActionResult GetAllSubscriptions()
         {
             try
             {
@@ -54,7 +54,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                 try
                 {
                     var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
-                    var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
+                    var userEmail = User.FindFirst(ApplicationConfiguration.CustomClaimEmail)!.Value;
 
                     var result = _subscriptionService.SubscribeAsync(userName, userEmail, model);
 
@@ -71,14 +71,14 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateFootballSubscriptionAsync([FromBody] SubscriptionRequest model)
+        public async Task<IActionResult> UpdateSubscriptionAsync([FromBody] SubscriptionRequest model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     var userName = User.FindFirst(ApplicationConfiguration.CustomClaimName)!.Value;
-                    var userEmail = User.FindFirst(JwtRegisteredClaimNames.Email)!.Value;
+                    var userEmail = User.FindFirst(ApplicationConfiguration.CustomClaimEmail)!.Value;
 
                     var result = await _subscriptionService.UpdateAsync(userName, userEmail, model);
 

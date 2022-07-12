@@ -28,8 +28,19 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
 
             await _scheduler.Start();
 
-            var trigger = TriggerBuilder.Create()
-                .WithIdentity(subModel.Id.ToString(), subModel.UserName).WithCronSchedule(subModel.CronExpression).StartAt(subModel.DateStart).Build();
+            ITrigger trigger;
+
+            if (subModel.DateStart == null)
+            {
+                trigger = TriggerBuilder.Create()
+                .WithIdentity(subModel.Id.ToString(), subModel.UserName).WithCronSchedule(subModel.CronExpression).StartNow().Build();
+            }
+            else
+            {
+                trigger = TriggerBuilder.Create()
+              .WithIdentity(subModel.Id.ToString(), subModel.UserName).WithCronSchedule(subModel.CronExpression).StartAt(subModel.DateStart).Build();
+            }
+
 
             var jobDetail = JobBuilder.Create<SubJob>()
                  .UsingJobData(ApplicationConfiguration.JobMainParam, email)

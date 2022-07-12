@@ -31,7 +31,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegistrationRequest user)
+        public IActionResult Register([FromBody] UserRegistrationRequest user)
         {
             if (ModelState.IsValid)
             {
@@ -62,7 +62,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
                         if (isCreated)
                         {
-                            var jwtToken = await GenerateJwtToken(newUser);
+                            var jwtToken =  GenerateJwtToken(newUser);
 
                             return Ok(jwtToken);
                         }
@@ -89,7 +89,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
+        public IActionResult Login([FromBody] UserLoginRequest user)
         {
             if(ModelState.IsValid)
             {
@@ -112,7 +112,7 @@ namespace OmegaSoftware.TestProject.Web.Controllers
                     {
                         var userToGenerateJWT = _mapper.Map<UserRequest>(existingUser);
 
-                        var jwtToken = await GenerateJwtToken(userToGenerateJWT);
+                        var jwtToken =  GenerateJwtToken(userToGenerateJWT);
 
                         return Ok(jwtToken);
                     }
@@ -136,13 +136,13 @@ namespace OmegaSoftware.TestProject.Web.Controllers
             });
         }
 
-        private async Task<AuthResponce> GenerateJwtToken(UserRequest user)
+        private AuthResponce GenerateJwtToken(UserRequest user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
             var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
 
-            var claims = await GetAllValidClaims(user);
+            var claims =  GetAllValidClaims(user);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -163,20 +163,18 @@ namespace OmegaSoftware.TestProject.Web.Controllers
         }
 
 
-        private static Task<List<Claim>> GetAllValidClaims(UserRequest user)
+        private static List<Claim> GetAllValidClaims(UserRequest user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ApplicationConfiguration.CustomClaimId, user.Id.ToString()),
+                new Claim(ApplicationConfiguration.CustomClaimEmail, user.Email),
                 new Claim(ApplicationConfiguration.CustomClaimName, user.Name),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             claims.Add(new Claim(ClaimTypes.Role, user.Role));
 
-            return Task.FromResult(claims);
+            return claims;
         }
 
         private static string HashPassword(string password)
