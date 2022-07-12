@@ -19,7 +19,7 @@ namespace OmegaSoftware.TestProject.BL.Domain.Services
             _schedulerFactory = schedulerFactory;
             _scopeFactory = serviceScopeFactory;
 
-            StartAllJods();
+            //StartAllJods();
         }
 
         public async Task CreateJobAsync(string email, Subscription subModel, Api apiModel)

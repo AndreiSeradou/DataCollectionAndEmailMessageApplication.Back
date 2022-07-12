@@ -21,10 +21,4 @@
     <ProjectReference Include="..\OmegaSoftware.TestProject.DAL\OmegaSoftware.TestProject.DAL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="db.subscriptions">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

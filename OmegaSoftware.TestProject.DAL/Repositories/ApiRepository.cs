@@ -133,7 +133,7 @@ namespace OmegaSoftware.TestProject.DAL.Repositories
         public Api GetByName(string apiName)
         {
             Api api = default;
-            var sqlExpression = "SELECT * FROM Apis WHERE apiName = @Name";
+            var sqlExpression = "SELECT * FROM Apis WHERE name = @Name";
 
             using (var connection = new SqliteConnection(_connectionStrings.SqLiteConnectionString))
             {
